@@ -3,7 +3,7 @@
   <component name="KotlinNotebookOptionsProvider">
     <option name="extraEnvironmentVariables">
       <map>
-        <entry key="PERSONAL_GITHUB_TOKEN" value="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" />
+        <entry key="PERSONAL_GITHUB_TOKEN" value="yourToken" />
       </map>
     </option>
   </component>
