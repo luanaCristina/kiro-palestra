@@ -1,0 +1,154 @@
+
+
+## 1. Sim, você pode ter 2 instâncias do Kiro
+
+O Kiro funciona como o VS Code — você pode abrir múltiplas janelas com workspaces diferentes. Cada workspace tem sua própria configuração MCP.
+
+### Como separar:
+
+| Instância | Workspace | MCP configurado |
+|-----------|-----------|-----------------|
+| **Trabalho (Natura)** | `/Users/luanacristina/projetos-natura/...` | Bitbucket corporativo |
+| **Pessoal (Palestra)** | `/Users/luanacristina/Documents/KiroProjeto` | GitHub + Jira + Confluence + QMetry pessoais |
+
+**Para abrir duas instâncias:**
+1. Abra o Kiro normalmente no projeto de trabalho
+2. Vá em `File → New Window`
+3. Na nova janela, abra a pasta `KiroProjeto`
+
+Cada janela usa o `.kiro/settings/mcp.json` do seu próprio workspace. Não há conflito.
+
+---
+
+## 2. Configuração completa para o workspace pessoal
+
+Vou atualizar o `mcp.json` deste projeto com todas as integrações pessoais:
+
+---
+
+## 3. Passo a passo para configurar cada serviço
+
+### A) GitHub Pessoal
+
+1. Acesse https://github.com/settings/tokens
+2. "Generate new token (classic)"
+3. Nome: `kiro-palestra-tdc`
+4. Scopes: `repo`, `read:org`
+5. Copie o token gerado
+
+### B) Jira + Confluence Pessoal (Atlassian Cloud gratuito)
+
+1. Acesse https://www.atlassian.com/software/jira/free — crie uma conta gratuita (até 10 usuários)
+2. Crie um projeto chamado `DEMO` no Jira
+3. Crie um space no Confluence para as regras de negócio
+4. Gere um API Token em https://id.atlassian.com/manage-profile/security/api-tokens
+5. Anote:
+   - URL do Jira: `https://seu-site.atlassian.net`
+   - URL do Confluence: `https://seu-site.atlassian.net/wiki`
+   - Username: seu email
+   - Token: o que você gerou
+
+### C) QMetry (SmartBear)
+
+1. Acesse https://www.qmetry.com — crie uma conta trial/free
+2. Instale o QMetry Test Management no seu Jira Cloud (Marketplace)
+3. Gere a API Key em QMetry → Settings → API Key
+4. Anote:
+   - Base URL: a URL do seu QMetry
+   - API Key: o token gerado
+
+### D) Salvar todas as variáveis de ambiente
+
+Adicione ao seu `~/.zshrc`:
+
+```bash
+# === PALESTRA TDC - Contas Pessoais ===
+export GITHUB_PERSONAL_TOKEN="ghp_seu_token_github"
+
+export JIRA_PERSONAL_URL="https://luana-tdc.atlassian.net"
+export JIRA_PERSONAL_USERNAME="seu-email-pessoal@gmail.com"
+export JIRA_PERSONAL_TOKEN="seu_token_atlassian"
+
+export CONFLUENCE_PERSONAL_URL="https://luana-tdc.atlassian.net/wiki"
+export CONFLUENCE_PERSONAL_USERNAME="seu-email-pessoal@gmail.com"
+export CONFLUENCE_PERSONAL_TOKEN="seu_token_atlassian"
+
+export QMETRY_PERSONAL_API_KEY="seu_token_qmetry"
+export QMETRY_PERSONAL_BASE_URL="https://sua-url-qmetry.com"
+```
+
+Depois:
+```bash
+source ~/.zshrc
+```
+
+---
+
+## 4. Como rodar o projeto de demo
+
+O projeto ainda precisa ser implementado (as tasks estão na spec). Para rodar:
+
+### Opção A: Executar as tasks via Kiro (recomendado para a demo)
+
+Abra o arquivo `.kiro/specs/appointment-scheduling/tasks.md` e use "Run All Tasks" ou execute task por task. O Kiro vai gerar todo o código TypeScript, instalar dependências e criar os testes.
+
+### Opção B: Setup manual (se quiser preparar antes)
+
+```bash
+cd /Users/luanacristina/Documents/KiroProjeto
+
+# Inicializar o projeto Node.js
+npm init -y
+npm install typescript express pg zod uuid dotenv
+npm install -D jest ts-jest @types/jest @types/express fast-check supertest @types/supertest
+
+# Configurar TypeScript
+npx tsc --init --strict --outDir dist --rootDir src
+
+# Rodar testes
+npm test
+```
+
+### Opção C: Para a palestra (mais prático)
+
+Peça ao Kiro:
+> "Execute a task 1.1 da spec appointment-scheduling — inicialize o projeto Node.js com TypeScript e Express"
+
+Ele vai criar tudo automaticamente.
+
+---
+
+## 5. Resumo visual da separação
+
+```
+┌─────────────────────────────────────────────────────┐
+│  Kiro - Janela 1 (TRABALHO)                         │
+│  Workspace: /projetos-natura/...                     │
+│  MCP: Bitbucket corporativo                         │
+│  ⚠️  Não mexer para a palestra                      │
+└─────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────┐
+│  Kiro - Janela 2 (PALESTRA)                         │
+│  Workspace: /Documents/KiroProjeto                  │
+│  MCP: GitHub pessoal + Jira free + QMetry trial     │
+│  ✅  Tudo aqui é público e seguro para apresentar   │
+└─────────────────────────────────────────────────────┘
+```
+
+---
+
+## Checklist para ficar pronta
+
+- [ ] Criar conta Atlassian Cloud gratuita (Jira + Confluence)
+- [ ] Instalar QMetry no Jira Cloud
+- [ ] Gerar GitHub Personal Access Token
+- [ ] Gerar Atlassian API Token
+- [ ] Gerar QMetry API Key
+- [ ] Adicionar variáveis ao `~/.zshrc`
+- [ ] Reiniciar o Kiro neste workspace
+- [ ] Testar: "Liste meus repositórios no GitHub"
+- [ ] Testar: "Leia o projeto DEMO no Jira"
+- [ ] Executar as tasks da spec para gerar o código do projeto
+
+Quer que eu comece a executar as tasks para gerar o código do projeto de demo?

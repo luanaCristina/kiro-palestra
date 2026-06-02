@@ -1,0 +1,86 @@
+Para conectar o seu Kiro pessoal a **todo o seu ecossistema de ferramentas** (Jira, Confluence, GitHub e QMetry), você só precisa configurar um único arquivo centralizado de Model Context Protocol (MCP) chamado **`mcp.json`**.
+
+Aqui está o passo a passo de como coletar as chaves de cada ferramenta e o código completo pronto para você salvar na sua pasta `.kiro/settings/mcp.json`.
+
+---
+
+## Passo 1: Coletar as credenciais de cada ferramenta
+
+### 1. Jira + Confluence (Atlassian)
+
+* Acesse: **[id.atlassian.com/manage-profile/security/api-tokens](https://id.atlassian.com/manage-profile/security/api-tokens)**
+* Clique em **Criar token de API**, dê um nome e copie o código gerado.
+* Anote o seu e-mail da Atlassian e a URL da sua instância (ex: `https://seu-dominio.atlassian.net`).
+
+### 2. GitHub
+
+* Acesse: **[github.com/settings/tokens](https://github.com/settings/tokens)** (Tokens classic).
+* Clique em **Generate new token (classic)**.
+* Selecione a caixinha com o escopo **`repo`** (necessário para o Kiro ler seus códigos e gerenciar PRs).
+* Gere o token e copie o código (começa com `ghp_`).
+
+### 3. QMetry (SmartBear)
+
+* Acesse sua instância do Jira Cloud onde o QMetry Test Management está instalado.
+* Vá em **QMetry** $\rightarrow$ **Settings** $\rightarrow$ **API Key**.
+* Gere a sua API Key e copie o código.
+* A URL padrão geralmente é `https://testmanagement.qmetry.com`.
+
+---
+
+## Passo 2: O arquivo de configuração completo (`mcp.json`)
+
+No seu computador, vá até a pasta do seu projeto, entre na pasta oculta `.kiro` (se não existir, crie), vá em `settings` e crie o arquivo `mcp.json`.
+
+> **Estrutura de pastas:** `seu-projeto/.kiro/settings/mcp.json`
+
+Abra o arquivo e cole o código completo abaixo, **substituindo os textos em maiúsculo pelas suas chaves e credenciais reais**:
+
+```json
+{
+  "mcpServers": {
+    "atlassian": {
+      "command": "uvx",
+      "args": ["mcp-atlassian"],
+      "env": {
+        "JIRA_URL": "https://SEU-DOMINIO.atlassian.net",
+        "JIRA_USERNAME": "SEU-EMAIL-ATLASSIAN@EXEMPLO.COM",
+        "JIRA_API_TOKEN": "SEU_TOKEN_DA_ATLASSIAN",
+        "CONFLUENCE_URL": "https://SEU-DOMINIO.atlassian.net/wiki",
+        "CONFLUENCE_USERNAME": "SEU-EMAIL-ATLASSIAN@EXEMPLO.COM",
+        "CONFLUENCE_API_TOKEN": "SEU_TOKEN_DA_ATLASSIAN"
+      }
+    },
+    "github": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "SEU_TOKEN_GHP_DO_GITHUB"
+      }
+    },
+    "smartbear": {
+      "command": "npx",
+      "args": ["-y", "@smartbear/mcp@latest"],
+      "env": {
+        "QMETRY_API_KEY": "SUA_API_KEY_DO_QMETRY",
+        "QMETRY_BASE_URL": "https://testmanagement.qmetry.com"
+      }
+    }
+  }
+}
+
+```
+
+---
+
+## Passo 3: Reiniciar e testar no Kiro
+
+1. Salve o arquivo e feche-o.
+2. Reinicie a IDE do Kiro para ele inicializar os servidores MCP em background.
+3. Abra o chat do Kiro e digite uma instrução que cruza essas ferramentas para validar que tudo está funcionando.
+
+### Exemplo de prompt para testar o ecossistema:
+
+> *"Kiro, use o MCP para ler a story DEMO-12 no Jira e as regras de negócio na página 'Validar Agendamento' do Confluence. Com base nisso, verifique o código atual no repositório do GitHub e crie um plano de casos de teste estruturados no QMetry para cobrir essa feature."*
+
+Pronto! Agora o seu Kiro pessoal tem superpoderes para ler e gerenciar todo o ciclo de qualidade direto da IDE.

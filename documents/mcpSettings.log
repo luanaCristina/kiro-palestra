@@ -1,0 +1,75 @@
+A separação já está funcionando corretamente pelo design do Kiro. Deixa eu explicar como:
+
+## Como o Kiro resolve configurações MCP
+
+O Kiro usa **dois níveis** de configuração:
+
+| Nível | Arquivo | Escopo |
+|-------|---------|--------|
+| **User (global)** | `~/.kiro/settings/mcp.json` | Aplica em TODOS os workspaces |
+| **Workspace (local)** | `.kiro/settings/mcp.json` dentro do projeto | Aplica SÓ naquele projeto |
+
+A regra de merge é: **workspace sobrescreve user**. Se o mesmo servidor existir nos dois, o workspace ganha.
+
+---
+
+## Sua situação atual
+
+Você provavelmente tem as configurações da Natura no nível **user** (`~/.kiro/settings/mcp.json`) — por isso funciona em todos os projetos da Natura.
+
+O que eu criei aqui no `KiroProjeto/.kiro/settings/mcp.json` é **workspace-level** — só existe neste projeto.
+
+### O problema potencial:
+
+Se as configs da Natura estão no user-level, elas também aparecem AQUI neste workspace (porque workspace herda do user). Isso significa que ao abrir este projeto, você teria Bitbucket da Natura + GitHub pessoal ao mesmo tempo.
+
+---
+
+## Solução: Manter tudo separado sem conflito
+
+Você tem duas opções:
+
+### Opção A: Mover configs da Natura para workspace-level (recomendado)
+
+1. Copie o conteúdo de `~/.kiro/settings/mcp.json` (configs Natura)
+2. Cole dentro de cada projeto da Natura: `projeto-natura/.kiro/settings/mcp.json`
+3. Limpe o `~/.kiro/settings/mcp.json` global (deixe vazio: `{ "mcpServers": {} }`)
+
+Resultado:
+- Projetos Natura → usam Bitbucket, Atlassian corporativo, Sonar, Figma
+- KiroProjeto → usa GitHub pessoal, Atlassian pessoal, QMetry pessoal
+- Zero conflito entre eles
+
+### Opção B: Manter Natura no global e desabilitar aqui (mais simples)
+
+Adicione `"disabled": true` para os servidores da Natura neste workspace:
+
+Com a Opção B (que acabei de aplicar):
+
+- Os servidores `bitbucket`, `sonarqube` e `figma` que vêm do seu user-level (Natura) ficam **desabilitados** neste workspace
+- Os servidores `github`, `atlassian` e `smartbear` pessoais ficam **ativos** só aqui
+- Nos projetos da Natura, nada muda — eles continuam usando o user-level normalmente
+
+---
+
+## Resumo visual
+
+```
+~/.kiro/settings/mcp.json (GLOBAL - Natura)
+├── bitbucket ✅ (ativo em todos os projetos)
+├── atlassian ✅ (Jira/Confluence corporativo)
+├── sonarqube ✅
+└── figma ✅
+
+KiroProjeto/.kiro/settings/mcp.json (LOCAL - Palestra)
+├── github ✅ (pessoal - SOBRESCREVE qualquer github global)
+├── atlassian ✅ (pessoal - SOBRESCREVE o corporativo)
+├── smartbear ✅ (QMetry pessoal)
+├── bitbucket ❌ disabled (ignora o global)
+├── sonarqube ❌ disabled (ignora o global)
+└── figma ❌ disabled (ignora o global)
+```
+
+**Resultado**: Quando você abre o KiroProjeto, só os servidores pessoais estão ativos. Quando abre um projeto da Natura, só os corporativos funcionam. Sem risco de cruzar dados.
+
+A Opção B é a mais simples porque você não precisa mexer nos projetos da Natura. Basta o `"disabled": true` aqui para bloquear os servidores corporativos neste workspace. Quer que eu ajude com mais alguma coisa?

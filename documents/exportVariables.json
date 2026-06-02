@@ -1,0 +1,13 @@
+# === PALESTRA TDC - Contas Pessoais ===
+export GITHUB_PERSONAL_TOKEN="ghp_seu_token_github"
+
+export JIRA_PERSONAL_URL="https://luana-tdc.atlassian.net"
+export JIRA_PERSONAL_USERNAME="seu-email-pessoal@gmail.com"
+export JIRA_PERSONAL_TOKEN="seu_token_atlassian"
+
+export CONFLUENCE_PERSONAL_URL="https://luana-tdc.atlassian.net/wiki"
+export CONFLUENCE_PERSONAL_USERNAME="seu-email-pessoal@gmail.com"
+export CONFLUENCE_PERSONAL_TOKEN="seu_token_atlassian"
+
+export QMETRY_PERSONAL_API_KEY="seu_token_qmetry"
+export QMETRY_PERSONAL_BASE_URL="https://sua-url-qmetry.com"
