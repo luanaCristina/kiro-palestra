@@ -3,8 +3,30 @@ import { validate } from '../middleware/validate';
 import { bookingRequestSchema, cancellationRequestSchema } from '../validation/schemas';
 import { bookAppointment, cancelAppointment, AppError } from '../services/appointment.service';
 import { ErrorResponse } from '../models/errors';
+import { query } from '../config/database';
 
 const router = Router();
+
+/**
+ * GET /api/appointments
+ * Lists all appointments with doctor and patient names.
+ */
+router.get('/', async (_req: Request, res: Response): Promise<void> => {
+  try {
+    const result = await query(`
+      SELECT a.id, a.start_time, a.end_time, a.duration_minutes, a.appointment_type, a.status, a.created_at, a.cancelled_at,
+             d.name as doctor_name, d.specialty,
+             p.name as patient_name
+      FROM appointments a
+      JOIN doctors d ON a.doctor_id = d.id
+      JOIN patients p ON a.patient_id = p.id
+      ORDER BY a.start_time DESC
+    `);
+    res.status(200).json({ appointments: result.rows });
+  } catch (error) {
+    res.status(500).json({ error: { code: 'INTERNAL_ERROR', message: 'Failed to fetch appointments' } });
+  }
+});
 
 /**
  * POST /api/appointments
