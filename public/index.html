@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistema de Agendamento de Consultas</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
+    .container { max-width: 1200px; margin: 0 auto; }
+    header { text-align: center; color: white; margin-bottom: 30px; }
+    header h1 { font-size: 2rem; margin-bottom: 8px; }
+    header p { opacity: 0.9; font-size: 1.1rem; }
+    .tabs { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; justify-content: center; }
+    .tab-btn { padding: 10px 20px; border-radius: 30px; border: 2px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.1); color: white; font-weight: 600; cursor: pointer; font-size: 0.9rem; transition: all 0.2s; }
+    .tab-btn:hover { background: rgba(255,255,255,0.2); }
+    .tab-btn.active { background: white; color: #667eea; border-color: white; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    @media (max-width: 768px) { .grid { grid-template-columns: 1fr; } }
+    .card { background: white; border-radius: 16px; padding: 24px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); }
+    .card.full { grid-column: 1 / -1; }
+    .card h2 { color: #4a5568; margin-bottom: 16px; font-size: 1.2rem; display: flex; align-items: center; gap: 8px; }
+    .form-group { margin-bottom: 14px; }
+    label { display: block; font-size: 0.85rem; font-weight: 600; color: #4a5568; margin-bottom: 4px; }
+    input, select { width: 100%; padding: 10px 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.95rem; transition: border-color 0.2s; }
+    input:focus, select:focus { outline: none; border-color: #667eea; }
+    button { width: 100%; padding: 12px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: transform 0.1s, opacity 0.2s; }
+    button:hover { opacity: 0.9; transform: translateY(-1px); }
+    button:active { transform: translateY(0); }
+    button.danger { background: linear-gradient(135deg, #e53e3e, #c53030); }
+    button.warning { background: linear-gradient(135deg, #dd6b20, #c05621); }
+    button.small { width: auto; padding: 6px 14px; font-size: 0.8rem; border-radius: 6px; }
+    button.secondary { background: linear-gradient(135deg, #4a5568, #2d3748); }
+    .result { margin-top: 16px; padding: 14px; border-radius: 10px; font-size: 0.85rem; max-height: 300px; overflow-y: auto; }
+    .result.success { background: #f0fff4; border: 1px solid #c6f6d5; color: #22543d; }
+    .result.error { background: #fff5f5; border: 1px solid #fed7d7; color: #742a2a; }
+    .result.info { background: #ebf8ff; border: 1px solid #bee3f8; color: #2a4365; }
+    .result pre { white-space: pre-wrap; word-break: break-word; font-family: monospace; font-size: 0.8rem; }
+    .badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+    .badge-green { background: #c6f6d5; color: #22543d; }
+    .badge-blue { background: #bee3f8; color: #2a4365; }
+    .badge-red { background: #fed7d7; color: #742a2a; }
+    .badge-yellow { background: #fefcbf; color: #744210; }
+    .status-bar { background: rgba(255,255,255,0.15); border-radius: 10px; padding: 10px 20px; margin-bottom: 20px; color: white; display: flex; justify-content: space-between; align-items: center; font-size: 0.9rem; }
+    .status-dot { width: 10px; height: 10px; border-radius: 50%; background: #68d391; display: inline-block; margin-right: 6px; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+    .slots-container { display: flex; flex-wrap: wrap; gap: 8px; min-height: 44px; padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; background: #f7fafc; }
+    .slots-hint { color: #a0aec0; font-size: 0.85rem; width: 100%; text-align: center; padding: 8px 0; }
+    .slot-btn { width: auto; padding: 8px 14px; background: #ebf8ff; color: #2b6cb0; border: 2px solid #bee3f8; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+    .slot-btn:hover { background: #bee3f8; border-color: #90cdf4; transform: translateY(-1px); }
+    .slot-btn.selected { background: #3182ce; color: white; border-color: #2b6cb0; box-shadow: 0 2px 8px rgba(49, 130, 206, 0.4); }
+    .slot-unavailable { background: #edf2f7 !important; color: #a0aec0 !important; border-color: #e2e8f0 !important; cursor: not-allowed !important; opacity: 0.6; text-decoration: line-through; }
+    .slot-unavailable:hover { transform: none !important; }
+    .slot-holiday { background: #fff5f5 !important; color: #e53e3e !important; border-color: #feb2b2 !important; cursor: not-allowed !important; font-weight: 700; }
+    .slot-holiday:hover { transform: none !important; }
+    .slots-loading, .slots-empty { font-size: 0.85rem; width: 100%; text-align: center; padding: 8px 0; }
+    .slots-loading { color: #667eea; }
+    .slots-empty { color: #e53e3e; }
+    .appointment-card { padding: 14px; border: 1px solid #e2e8f0; border-radius: 12px; margin-bottom: 12px; background: #fafafa; }
+    .appointment-card.cancelled { opacity: 0.6; background: #fff5f5; border-color: #fed7d7; }
+    .appointment-card h4 { color: #2d3748; margin-bottom: 6px; font-size: 0.95rem; }
+    .appointment-card p { font-size: 0.85rem; color: #718096; margin-bottom: 4px; }
+    .appointment-actions { display: flex; gap: 8px; margin-top: 10px; }
+    .person-card { padding: 10px 14px; border: 1px solid #e2e8f0; border-radius: 10px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+    .person-card .info { font-size: 0.85rem; color: #4a5568; }
+    .person-card .info small { color: #a0aec0; display: block; font-size: 0.75rem; }
+    .avail-range { padding: 10px 14px; border: 1px solid #e2e8f0; border-radius: 10px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; background: #f7fafc; }
+    .avail-range .info { font-size: 0.9rem; color: #2d3748; }
+    .avail-range .actions { display: flex; gap: 6px; }
+    .holiday-alert { background: #fff5f5; border: 2px solid #fc8181; border-radius: 10px; padding: 12px 16px; margin-top: 12px; color: #742a2a; font-size: 0.9rem; display: flex; align-items: center; gap: 8px; }
+    .holiday-alert .icon { font-size: 1.3rem; }
+    .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 999; align-items: center; justify-content: center; }
+    .modal-overlay.visible { display: flex; }
+    .modal-content { max-width: 500px; width: 90%; }
+    .day-names { font-size: 0.8rem; color: #718096; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🏥 Sistema de Agendamento de Consultas</h1>
+      <p>API REST — Demonstração Interativa</p>
+    </header>
+    <div class="status-bar">
+      <span><span class="status-dot"></span> API rodando em localhost:3000</span>
+      <span>SDC — Sistema de Consulta</span>
+    </div>
+    <div class="tabs">
+      <button class="tab-btn active" onclick="showTab('cadastro', this)">👥 Cadastro</button>
+      <button class="tab-btn" onclick="showTab('disponibilidade', this)">📅 Disponibilidade</button>
+      <button class="tab-btn" onclick="showTab('agendamento', this)">✅ Agendamento</button>
+      <button class="tab-btn" onclick="showTab('consultas', this)">📋 Consultas</button>
+    </div>
+
+    <!-- TAB: Cadastro -->
+    <div id="tab-cadastro" class="tab-content active">
+      <div class="grid">
+        <div class="card">
+          <h2>👨‍⚕️ Cadastrar Médico</h2>
+          <div class="form-group"><label>Nome</label><input type="text" id="newDoctorName" placeholder="Dr. Nome Completo"></div>
+          <div class="form-group"><label>Especialidade</label>
+            <select id="newDoctorSpecialty"><option value="cardiology">Cardiologia</option><option value="dermatology">Dermatologia</option><option value="neurology">Neurologia</option><option value="orthopedics">Ortopedia</option><option value="pediatrics">Pediatria</option><option value="psychiatry">Psiquiatria</option><option value="general_practice">Clínica Geral</option></select>
+          </div>
+          <button onclick="createDoctor()">Cadastrar Médico</button>
+          <div id="createDoctorResult"></div>
+          <div style="margin-top:16px"><label>Médicos cadastrados:</label><div id="doctorsList"></div></div>
+        </div>
+        <div class="card">
+          <h2>👤 Cadastrar Paciente</h2>
+          <div class="form-group"><label>Nome</label><input type="text" id="newPatientName" placeholder="Nome Completo"></div>
+          <div class="form-group"><label>Email</label><input type="email" id="newPatientEmail" placeholder="email@exemplo.com"></div>
+          <button onclick="createPatient()">Cadastrar Paciente</button>
+          <div id="createPatientResult"></div>
+          <div style="margin-top:16px"><label>Pacientes cadastrados:</label><div id="patientsList"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB: Disponibilidade -->
+    <div id="tab-disponibilidade" class="tab-content">
+      <div class="grid">
+        <div class="card">
+          <h2>📅 Adicionar Disponibilidade</h2>
+          <div class="form-group"><label>Médico</label><select id="availDoctor" onchange="loadDoctorAvailability()"></select></div>
+          <div class="form-group"><label>Dia da Semana</label>
+            <select id="availDay"><option value="1">Segunda-feira</option><option value="2">Terça-feira</option><option value="3">Quarta-feira</option><option value="4">Quinta-feira</option><option value="5">Sexta-feira</option><option value="6">Sábado</option></select>
+          </div>
+          <div class="form-group"><label>Horário Início</label>
+            <select id="availStart"><option value="07:00">07:00</option><option value="07:30">07:30</option><option value="08:00" selected>08:00</option><option value="08:30">08:30</option><option value="09:00">09:00</option><option value="09:30">09:30</option><option value="10:00">10:00</option><option value="10:30">10:30</option><option value="11:00">11:00</option><option value="13:00">13:00</option><option value="13:30">13:30</option><option value="14:00">14:00</option><option value="14:30">14:30</option><option value="15:00">15:00</option></select>
+          </div>
+          <div class="form-group"><label>Horário Fim</label>
+            <select id="availEnd"><option value="11:00">11:00</option><option value="11:30">11:30</option><option value="12:00" selected>12:00</option><option value="12:30">12:30</option><option value="13:00">13:00</option><option value="16:00">16:00</option><option value="17:00">17:00</option><option value="17:30">17:30</option><option value="18:00">18:00</option><option value="18:30">18:30</option><option value="19:00">19:00</option></select>
+          </div>
+          <button onclick="addAvailability()">Adicionar Horário</button>
+          <div id="availResult"></div>
+        </div>
+        <div class="card">
+          <h2>📋 Horários Configurados</h2>
+          <p style="font-size:0.8rem;color:#718096;margin-bottom:12px">Selecione um médico para ver e gerenciar seus horários</p>
+          <div id="availabilityList"><p class="slots-hint">Selecione um médico na esquerda</p></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB: Agendamento -->
+    <div id="tab-agendamento" class="tab-content">
+      <div class="grid">
+        <div class="card full">
+          <h2>✅ Agendar Consulta</h2>
+          <div class="grid" style="gap:14px">
+            <div class="form-group"><label>Estado (para feriados)</label><select id="bookState" onchange="loadAvailableSlots()"></select></div>
+            <div class="form-group"><label>Paciente</label><select id="bookPatient"></select></div>
+            <div class="form-group"><label>Médico</label><select id="bookDoctor" onchange="loadAvailableSlots()"></select></div>
+            <div class="form-group"><label>Tipo de Consulta</label>
+              <select id="bookType" onchange="loadAvailableSlots()"><option value="FIRST_VISIT">Primeira Consulta (60 min)</option><option value="FOLLOW_UP">Retorno (30 min)</option></select>
+            </div>
+            <div class="form-group"><label>Data</label><input type="date" id="bookDate" onchange="loadAvailableSlots()"></div>
+          </div>
+          <div id="holidayAlert" style="display:none"></div>
+          <div class="form-group" style="margin-top:14px">
+            <label>Horários Disponíveis</label>
+            <div id="slotsContainer" class="slots-container"><p class="slots-hint">Selecione médico, tipo e data</p></div>
+          </div>
+          <input type="hidden" id="bookDateTime" value="">
+          <button onclick="bookAppointment()" style="margin-top:10px">Agendar Consulta</button>
+          <div id="bookResult"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB: Consultas -->
+    <div id="tab-consultas" class="tab-content">
+      <div class="grid">
+        <div class="card full">
+          <h2>📋 Consultas Agendadas</h2>
+          <button onclick="loadAppointments()" style="margin-bottom:16px">🔄 Atualizar Lista</button>
+          <div id="appointmentsList"><p class="slots-hint">Clique em "Atualizar Lista"</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Reagendar -->
+  <div id="rescheduleModal" class="modal-overlay">
+    <div class="card modal-content">
+      <h2>🔄 Reagendar Consulta</h2>
+      <div class="form-group"><label>Nova Data</label><input type="date" id="rescheduleDate" onchange="loadRescheduleSlots()"></div>
+      <div class="form-group"><label>Horários Disponíveis</label><div id="rescheduleSlotsContainer" class="slots-container"><p class="slots-hint">Selecione nova data</p></div></div>
+      <input type="hidden" id="rescheduleDateTime"><input type="hidden" id="rescheduleAppointmentId"><input type="hidden" id="reschedulePatientId"><input type="hidden" id="rescheduleDoctorId"><input type="hidden" id="rescheduleType"><input type="hidden" id="rescheduleDoctorSpecialty">
+      <div style="display:flex;gap:10px;margin-top:14px">
+        <button onclick="confirmReschedule()">Confirmar</button>
+        <button class="danger" onclick="closeModal('rescheduleModal')">Cancelar</button>
+      </div>
+      <div id="rescheduleResult"></div>
+    </div>
+  </div>
+
+  <!-- Modal Editar Disponibilidade -->
+  <div id="editAvailModal" class="modal-overlay">
+    <div class="card modal-content">
+      <h2>✏️ Editar Disponibilidade</h2>
+      <div class="form-group"><label>Dia da Semana</label>
+        <select id="editAvailDay"><option value="1">Segunda</option><option value="2">Terça</option><option value="3">Quarta</option><option value="4">Quinta</option><option value="5">Sexta</option><option value="6">Sábado</option></select>
+      </div>
+      <div class="form-group"><label>Horário Início</label><input type="time" id="editAvailStart" step="900"></div>
+      <div class="form-group"><label>Horário Fim</label><input type="time" id="editAvailEnd" step="900"></div>
+      <input type="hidden" id="editAvailRangeId">
+      <div style="display:flex;gap:10px;margin-top:14px">
+        <button onclick="saveEditAvailability()">Salvar</button>
+        <button class="danger" onclick="closeModal('editAvailModal')">Cancelar</button>
+      </div>
+      <div id="editAvailResult"></div>
+    </div>
+  </div>
+
+<script>
+const API = '';
+let selectedSlot = null;
+let allDoctors = [];
+let allPatients = [];
+const DAY_NAMES = ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
+
+function showTab(tab, btn) {
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  btn.classList.add('active');
+  if (tab === 'consultas') loadAppointments();
+  if (tab === 'cadastro') { loadDoctorsList(); loadPatientsList(); }
+  if (tab === 'disponibilidade') loadDoctorAvailability();
+}
+
+function showResult(id, data, type) {
+  document.getElementById(id).innerHTML = `<div class="result ${type}"><pre>${typeof data === 'object' ? JSON.stringify(data, null, 2) : data}</pre></div>`;
+}
+
+function closeModal(id) { document.getElementById(id).classList.remove('visible'); }
+
+// --- CADASTRO ---
+async function createDoctor() {
+  const name = document.getElementById('newDoctorName').value.trim();
+  const specialty = document.getElementById('newDoctorSpecialty').value;
+  if (!name) { showResult('createDoctorResult', 'Informe o nome', 'error'); return; }
+  const res = await fetch(`${API}/api/doctors`, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({name, specialty}) });
+  const data = await res.json();
+  if (res.ok) { showResult('createDoctorResult', `✅ ${data.doctor.name} cadastrado!`, 'success'); document.getElementById('newDoctorName').value = ''; refreshDropdowns(); }
+  else showResult('createDoctorResult', data, 'error');
+}
+
+async function createPatient() {
+  const name = document.getElementById('newPatientName').value.trim();
+  const email = document.getElementById('newPatientEmail').value.trim();
+  if (!name || !email) { showResult('createPatientResult', 'Informe nome e email', 'error'); return; }
+  const res = await fetch(`${API}/api/patients`, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({name, email}) });
+  const data = await res.json();
+  if (res.ok) { showResult('createPatientResult', `✅ ${data.patient.name} cadastrado!`, 'success'); document.getElementById('newPatientName').value = ''; document.getElementById('newPatientEmail').value = ''; refreshDropdowns(); }
+  else showResult('createPatientResult', data, 'error');
+}
+
+async function loadDoctorsList() {
+  const res = await fetch(`${API}/api/doctors/all`); const data = await res.json();
+  allDoctors = data.doctors || [];
+  document.getElementById('doctorsList').innerHTML = allDoctors.length ? allDoctors.map(d => `<div class="person-card"><div class="info">${d.name}<small>${d.specialty}</small></div></div>`).join('') : '<p class="slots-hint">Nenhum médico</p>';
+}
+
+async function loadPatientsList() {
+  const res = await fetch(`${API}/api/patients`); const data = await res.json();
+  allPatients = data.patients || [];
+  document.getElementById('patientsList').innerHTML = allPatients.length ? allPatients.map(p => `<div class="person-card"><div class="info">${p.name}<small>${p.email}</small></div></div>`).join('') : '<p class="slots-hint">Nenhum paciente</p>';
+}
+
+async function refreshDropdowns() {
+  await loadDoctorsList(); await loadPatientsList();
+  ['bookDoctor','availDoctor'].forEach(id => { const el = document.getElementById(id); if (el) el.innerHTML = allDoctors.map(d => `<option value="${d.id}">${d.name} (${d.specialty})</option>`).join(''); });
+  ['bookPatient'].forEach(id => { const el = document.getElementById(id); if (el) el.innerHTML = allPatients.map(p => `<option value="${p.id}">${p.name}</option>`).join(''); });
+}
+
+// --- DISPONIBILIDADE ---
+async function addAvailability() {
+  const doctorId = document.getElementById('availDoctor').value;
+  const day = parseInt(document.getElementById('availDay').value);
+  const start = document.getElementById('availStart').value;
+  const end = document.getElementById('availEnd').value;
+  const res = await fetch(`${API}/api/doctors/${doctorId}/availability`, {
+    method: 'PUT', headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({ schedule: { ranges: [{ dayOfWeek: day, startTime: start, endTime: end }] } })
+  });
+  const data = await res.json();
+  showResult('availResult', res.ok ? '✅ Disponibilidade salva!' : data, res.ok ? 'success' : 'error');
+  if (res.ok) loadDoctorAvailability();
+}
+
+async function loadDoctorAvailability() {
+  const doctorId = document.getElementById('availDoctor').value;
+  if (!doctorId) return;
+  const res = await fetch(`${API}/api/availability/${doctorId}`);
+  const data = await res.json();
+  const ranges = data.ranges || [];
+  const container = document.getElementById('availabilityList');
+  if (ranges.length === 0) { container.innerHTML = '<p class="slots-hint">Nenhum horário configurado</p>'; return; }
+  container.innerHTML = ranges.map(r => `
+    <div class="avail-range">
+      <div class="info"><strong>${DAY_NAMES[r.day_of_week]}</strong> — ${r.start_time.slice(0,5)} às ${r.end_time.slice(0,5)}</div>
+      <div class="actions">
+        <button class="small warning" onclick="openEditAvail('${r.id}', ${r.day_of_week}, '${r.start_time.slice(0,5)}', '${r.end_time.slice(0,5)}')">✏️</button>
+        <button class="small danger" onclick="deleteAvailability('${r.id}')">🗑️</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function openEditAvail(rangeId, day, start, end) {
+  document.getElementById('editAvailRangeId').value = rangeId;
+  document.getElementById('editAvailDay').value = day;
+  document.getElementById('editAvailStart').value = start;
+  document.getElementById('editAvailEnd').value = end;
+  document.getElementById('editAvailResult').innerHTML = '';
+  document.getElementById('editAvailModal').classList.add('visible');
+}
+
+async function saveEditAvailability() {
+  const rangeId = document.getElementById('editAvailRangeId').value;
+  const dayOfWeek = parseInt(document.getElementById('editAvailDay').value);
+  const startTime = document.getElementById('editAvailStart').value;
+  const endTime = document.getElementById('editAvailEnd').value;
+  const res = await fetch(`${API}/api/availability/${rangeId}`, {
+    method: 'PUT', headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({ dayOfWeek, startTime, endTime })
+  });
+  if (res.ok) { closeModal('editAvailModal'); loadDoctorAvailability(); }
+  else { const data = await res.json(); showResult('editAvailResult', data, 'error'); }
+}
+
+async function deleteAvailability(rangeId) {
+  if (!confirm('Deseja excluir este horário? (ex: médico doente, feriado, mudança de agenda)')) return;
+  const res = await fetch(`${API}/api/availability/${rangeId}`, { method: 'DELETE' });
+  if (res.ok) loadDoctorAvailability();
+  else alert('Erro ao excluir');
+}
+
+// --- AGENDAMENTO ---
+async function loadAvailableSlots() {
+  const doctorId = document.getElementById('bookDoctor').value;
+  const date = document.getElementById('bookDate').value;
+  const appointmentType = document.getElementById('bookType').value;
+  const stateCode = document.getElementById('bookState').value;
+  const container = document.getElementById('slotsContainer');
+  const alertDiv = document.getElementById('holidayAlert');
+  alertDiv.style.display = 'none';
+
+  if (!doctorId || !date) { container.innerHTML = '<p class="slots-hint">Selecione médico, tipo e data</p>'; return; }
+
+  // Check if date is a holiday
+  const holidayRes = await fetch(`${API}/api/holidays?state=${stateCode}&date=${date}`);
+  const holidayData = await holidayRes.json();
+  if (holidayData.isHoliday) {
+    alertDiv.style.display = 'block';
+    alertDiv.innerHTML = `<div class="holiday-alert"><span class="icon">🚫</span><div><strong>Feriado: ${holidayData.holiday.name}</strong><br>Não é possível agendar nesta data (${holidayData.holiday.type === 'national' ? 'Feriado Nacional' : 'Feriado Estadual - ' + stateCode})</div></div>`;
+    container.innerHTML = '<p class="slots-empty" style="color:#e53e3e;font-weight:600">🚫 FERIADO — Agendamento indisponível nesta data</p>';
+    document.getElementById('bookDateTime').value = '';
+    return;
+  }
+
+  container.innerHTML = '<p class="slots-loading">⏳ Carregando horários...</p>';
+  selectedSlot = null;
+  document.getElementById('bookDateTime').value = '';
+  const doctor = allDoctors.find(d => d.id === doctorId);
+  const specialty = doctor ? doctor.specialty : 'general_practice';
+  const duration = appointmentType === 'FIRST_VISIT' ? 60 : 30;
+
+  try {
+    const res = await fetch(`${API}/api/doctors?specialty=${specialty}&date=${date}`);
+    const data = await res.json();
+    if (res.ok && data.doctors) {
+      const doc = data.doctors.find(d => d.id === doctorId);
+      if (doc && doc.availableSlots && doc.availableSlots.length > 0) {
+        const allSlots = doc.availableSlots;
+        const lastSlot = allSlots[allSlots.length - 1];
+        const boundaryEnd = new Date(lastSlot.endTime).getTime();
+        let html = '';
+        const shownTimes = new Set();
+        allSlots.forEach(slot => {
+          const slotStart = new Date(slot.startTime).getTime();
+          const minutes = new Date(slot.startTime).getMinutes();
+          if (minutes !== 0 && minutes !== 30) return;
+          const timeKey = new Date(slotStart).toISOString();
+          if (shownTimes.has(timeKey)) return;
+          shownTimes.add(timeKey);
+          const slotEndNeeded = slotStart + duration * 60 * 1000;
+          const hasEnoughSpace = slotEndNeeded <= boundaryEnd;
+          const timeStr = new Date(slotStart).toTimeString().slice(0, 5);
+          const endTimeStr = new Date(slotEndNeeded).toTimeString().slice(0, 5);
+          if (hasEnoughSpace) {
+            html += `<button class="slot-btn" onclick="selectSlot(this, '${slot.startTime}')" title="${timeStr} - ${endTimeStr} (${duration}min)">${timeStr}</button>`;
+          } else {
+            html += `<button class="slot-btn slot-unavailable" disabled title="Sem tempo para ${duration}min">${timeStr}</button>`;
+          }
+        });
+        container.innerHTML = html || '<p class="slots-empty">❌ Nenhum horário disponível</p>';
+      } else { container.innerHTML = '<p class="slots-empty">❌ Nenhum horário disponível nesta data</p>'; }
+    } else { container.innerHTML = '<p class="slots-empty">❌ Nenhum horário disponível</p>'; }
+  } catch (e) { container.innerHTML = '<p class="slots-empty">Erro: ' + e.message + '</p>'; }
+}
+
+function selectSlot(btn, isoTime) {
+  document.querySelectorAll('#slotsContainer .slot-btn.selected').forEach(el => el.classList.remove('selected'));
+  btn.classList.add('selected');
+  document.getElementById('bookDateTime').value = isoTime;
+}
+
+async function bookAppointment() {
+  const patientId = document.getElementById('bookPatient').value;
+  const doctorId = document.getElementById('bookDoctor').value;
+  const startTime = document.getElementById('bookDateTime').value;
+  const type = document.getElementById('bookType').value;
+  if (!startTime) { showResult('bookResult', 'Selecione um horário', 'error'); return; }
+  const res = await fetch(`${API}/api/appointments`, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ patientId, doctorId, startTime, appointmentType: type }) });
+  const data = await res.json();
+  if (res.ok) {
+    const c = data.confirmation;
+    document.getElementById('bookResult').innerHTML = `<div class="result success"><p><strong>✅ Consulta agendada!</strong></p><p>👤 ${c.patientName} → 👨‍⚕️ ${c.doctorName}</p><p>📅 ${c.date} | ⏰ ${c.startTime.split('T')[1].slice(0,5)} - ${c.endTime.split('T')[1].slice(0,5)}</p><p><span class="badge badge-blue">${c.appointmentType === 'FIRST_VISIT' ? 'Primeira Consulta (60min)' : 'Retorno (30min)'}</span></p></div>`;
+    loadAvailableSlots();
+  } else showResult('bookResult', data, 'error');
+}
+
+// --- CONSULTAS ---
+async function loadAppointments() {
+  const res = await fetch(`${API}/api/appointments`); const data = await res.json();
+  const appointments = data.appointments || [];
+  const container = document.getElementById('appointmentsList');
+  if (!appointments.length) { container.innerHTML = '<p class="slots-hint">Nenhuma consulta</p>'; return; }
+  container.innerHTML = appointments.map(a => {
+    const start = new Date(a.start_time); const end = new Date(a.end_time);
+    const cancelled = a.status === 'cancelled';
+    return `<div class="appointment-card ${cancelled ? 'cancelled' : ''}">
+      <h4>👤 ${a.patient_name} → 👨‍⚕️ ${a.doctor_name}</h4>
+      <p>📅 ${start.toLocaleDateString('pt-BR')} | ⏰ ${start.toTimeString().slice(0,5)} - ${end.toTimeString().slice(0,5)}</p>
+      <p><span class="badge badge-blue">${a.appointment_type === 'FIRST_VISIT' ? 'Primeira Consulta' : 'Retorno'}</span> <span class="badge ${cancelled ? 'badge-red' : 'badge-green'}">${cancelled ? 'Cancelada' : 'Confirmada'}</span></p>
+      ${!cancelled ? `<div class="appointment-actions">
+        <button class="small warning" onclick="openReschedule('${a.id}','${a.patient_name}','${a.doctor_name}','${a.appointment_type}','${a.specialty}')">🔄 Reagendar</button>
+        <button class="small danger" onclick="cancelAppt('${a.id}','${a.patient_name}')">❌ Cancelar</button>
+      </div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+async function cancelAppt(id, patientName) {
+  if (!confirm(`Cancelar consulta de ${patientName}?`)) return;
+  const patient = allPatients.find(p => p.name === patientName);
+  if (!patient) { alert('Paciente não encontrado'); return; }
+  const res = await fetch(`${API}/api/appointments/${id}/cancel`, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ patientId: patient.id }) });
+  const data = await res.json();
+  if (res.ok) { alert('✅ Cancelada!'); loadAppointments(); }
+  else alert('Erro: ' + (data.error?.message || 'Falha'));
+}
+
+// --- REAGENDAR ---
+function openReschedule(id, patientName, doctorName, type, specialty) {
+  const patient = allPatients.find(p => p.name === patientName);
+  const doctor = allDoctors.find(d => d.name === doctorName);
+  document.getElementById('rescheduleAppointmentId').value = id;
+  document.getElementById('reschedulePatientId').value = patient?.id || '';
+  document.getElementById('rescheduleDoctorId').value = doctor?.id || '';
+  document.getElementById('rescheduleType').value = type;
+  document.getElementById('rescheduleDoctorSpecialty').value = specialty;
+  document.getElementById('rescheduleDate').value = '';
+  document.getElementById('rescheduleSlotsContainer').innerHTML = '<p class="slots-hint">Selecione nova data</p>';
+  document.getElementById('rescheduleResult').innerHTML = '';
+  document.getElementById('rescheduleModal').classList.add('visible');
+}
+
+async function loadRescheduleSlots() {
+  const date = document.getElementById('rescheduleDate').value;
+  const doctorId = document.getElementById('rescheduleDoctorId').value;
+  const specialty = document.getElementById('rescheduleDoctorSpecialty').value;
+  const type = document.getElementById('rescheduleType').value;
+  const container = document.getElementById('rescheduleSlotsContainer');
+  if (!date) return;
+  container.innerHTML = '<p class="slots-loading">⏳ Carregando...</p>';
+  const duration = type === 'FIRST_VISIT' ? 60 : 30;
+  try {
+    const res = await fetch(`${API}/api/doctors?specialty=${specialty}&date=${date}`);
+    const data = await res.json();
+    if (res.ok && data.doctors) {
+      const doc = data.doctors.find(d => d.id === doctorId);
+      if (doc && doc.availableSlots && doc.availableSlots.length > 0) {
+        const allSlots = doc.availableSlots;
+        const boundaryEnd = new Date(allSlots[allSlots.length - 1].endTime).getTime();
+        let html = ''; const seen = new Set();
+        allSlots.forEach(slot => {
+          const slotStart = new Date(slot.startTime).getTime();
+          const min = new Date(slot.startTime).getMinutes();
+          if (min !== 0 && min !== 30) return;
+          const key = new Date(slotStart).toISOString();
+          if (seen.has(key)) return; seen.add(key);
+          const fits = slotStart + duration * 60 * 1000 <= boundaryEnd;
+          const timeStr = new Date(slotStart).toTimeString().slice(0, 5);
+          html += fits ? `<button class="slot-btn" onclick="selectRescheduleSlot(this,'${slot.startTime}')">${timeStr}</button>` : `<button class="slot-btn slot-unavailable" disabled>${timeStr}</button>`;
+        });
+        container.innerHTML = html || '<p class="slots-empty">❌ Sem horários</p>';
+      } else container.innerHTML = '<p class="slots-empty">❌ Sem horários</p>';
+    } else container.innerHTML = '<p class="slots-empty">❌ Sem horários</p>';
+  } catch (e) { container.innerHTML = '<p class="slots-empty">Erro</p>'; }
+}
+
+function selectRescheduleSlot(btn, iso) {
+  document.querySelectorAll('#rescheduleSlotsContainer .slot-btn.selected').forEach(el => el.classList.remove('selected'));
+  btn.classList.add('selected');
+  document.getElementById('rescheduleDateTime').value = iso;
+}
+
+async function confirmReschedule() {
+  const id = document.getElementById('rescheduleAppointmentId').value;
+  const patientId = document.getElementById('reschedulePatientId').value;
+  const doctorId = document.getElementById('rescheduleDoctorId').value;
+  const newTime = document.getElementById('rescheduleDateTime').value;
+  const type = document.getElementById('rescheduleType').value;
+  if (!newTime) { showResult('rescheduleResult', 'Selecione um horário', 'error'); return; }
+  // Cancel old
+  const cancelRes = await fetch(`${API}/api/appointments/${id}/cancel`, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ patientId }) });
+  if (!cancelRes.ok) { const err = await cancelRes.json(); showResult('rescheduleResult', err.error?.message || 'Erro ao cancelar', 'error'); return; }
+  // Book new
+  const bookRes = await fetch(`${API}/api/appointments`, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ patientId, doctorId, startTime: newTime, appointmentType: type }) });
+  if (bookRes.ok) { showResult('rescheduleResult', '✅ Reagendado!', 'success'); setTimeout(() => { closeModal('rescheduleModal'); loadAppointments(); }, 1000); }
+  else { const err = await bookRes.json(); showResult('rescheduleResult', err, 'error'); }
+}
+
+// --- INIT ---
+async function init() {
+  // Load states
+  const statesRes = await fetch(`${API}/api/states`);
+  const statesData = await statesRes.json();
+  const stateSelect = document.getElementById('bookState');
+  stateSelect.innerHTML = (statesData.states || []).map(s => `<option value="${s.code}" ${s.code === 'PE' ? 'selected' : ''}>${s.name} (${s.code})</option>`).join('');
+  await refreshDropdowns();
+  // Default date
+  const today = new Date();
+  const daysAhead = (3 - today.getDay() + 7) % 7 || 7;
+  const nextDay = new Date(today); nextDay.setDate(today.getDate() + daysAhead);
+  document.getElementById('bookDate').value = nextDay.toISOString().slice(0, 10);
+  setTimeout(() => loadAvailableSlots(), 300);
+}
+init();
+</script>
+</body>
+</html>

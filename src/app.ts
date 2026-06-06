@@ -1,9 +1,13 @@
 import express, { Request, Response, NextFunction } from 'express';
+import path from 'path';
 import router from './routes';
 
 const app = express();
 
 app.use(express.json());
+
+// Serve static frontend files
+app.use(express.static(path.join(__dirname, '..', 'public')));
 
 // Health check endpoint
 app.get('/health', (_req: Request, res: Response) => {
