@@ -7,7 +7,8 @@ const app = express();
 app.use(express.json());
 
 // Serve static frontend files
-app.use(express.static(path.join(__dirname, '..', 'public')));
+const publicPath = path.join(__dirname, '..', 'public');
+app.use(express.static(publicPath));
 
 // Health check endpoint
 app.get('/health', (_req: Request, res: Response) => {
@@ -16,6 +17,12 @@ app.get('/health', (_req: Request, res: Response) => {
 
 // API routes
 app.use('/api', router);
+
+// Fallback: serve index.html for any non-API route (SPA support)
+app.get('*', (_req: Request, res: Response) => {
+  const indexPath = path.join(publicPath, 'index.html');
+  res.sendFile(indexPath);
+});
 
 // Global error handler
 app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
