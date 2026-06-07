@@ -27,7 +27,7 @@ dotenv.config();
 
 const QMETRY_API_KEY = process.env.QMETRY_API_KEY || '';
 const QMETRY_PROJECT_KEY = process.env.QMETRY_PROJECT_KEY || 'SDC';
-const QMETRY_BASE_URL = process.env.QMETRY_BASE_URL || 'https://testmanagement.qmetry.com';
+const QMETRY_BASE_URL = process.env.QMETRY_BASE_URL || 'https://qtmcloud.qmetry.com';
 const QMETRY_FOLDER_ID = process.env.QMETRY_FOLDER_ID || '2531077'; // Regression folder
 
 const RESULTS_FILE = path.resolve(__dirname, '../test-results/junit-results.xml');
@@ -129,34 +129,56 @@ async function importViaAutomationAPI(
 ): Promise<{ trackingId?: string; id?: string }> {
   const url = `${QMETRY_BASE_URL}/rest/api/automation/importresult`;
 
-  const payload = {
-    format: 'junit/xml',
-    attachFile: base64Content,
-    fileName: 'junit-results.xml',
-    isMatchingRequired: 'true',
+  // Step 1: Get upload URL from QMetry (QMetry for Jira Cloud uses 2-step process)
+  const payload: any = {
+    format: 'JUNIT',
     testCycleToReuse: '',
     environment: '',
     build: '',
-    testsuiteName: testSuiteName,
-    tcFolderPath: '/Regression',
+    isMatchingRequired: true,
   };
 
-  const response = await fetch(url, {
+  const step1Response = await fetch(url, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       'apiKey': QMETRY_API_KEY,
-      'scope': QMETRY_PROJECT_KEY,
     },
     body: JSON.stringify(payload),
   });
 
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(`QMetry import failed (${response.status}): ${errorText}`);
+  if (!step1Response.ok) {
+    const errorText = await step1Response.text();
+    throw new Error(`QMetry Step 1 failed (${step1Response.status}): ${errorText}`);
   }
 
-  return response.json();
+  const step1Result = await step1Response.json();
+
+  if (!step1Result.url) {
+    throw new Error(`QMetry did not return upload URL: ${JSON.stringify(step1Result)}`);
+  }
+
+  console.log(`   Tracking ID: ${step1Result.trackingId}`);
+  console.log('   Uploading XML to S3...');
+
+  // Step 2: Upload the actual XML file to the S3 pre-signed URL
+  // Use curl for precise header control (Node fetch may add extra headers that break S3 signature)
+  const xmlFilePath = RESULTS_FILE;
+
+  try {
+    const curlCmd = `curl -s -o /dev/null -w "%{http_code}" -X PUT "${step1Result.url}" -H "Content-Type: multipart/form-data" -T "${xmlFilePath}"`;
+    const httpCode = execSync(curlCmd, { encoding: 'utf-8' }).trim();
+
+    if (httpCode !== '200') {
+      throw new Error(`S3 upload returned HTTP ${httpCode}`);
+    }
+  } catch (curlError: any) {
+    throw new Error(`S3 upload failed: ${curlError.message}`);
+  }
+
+  console.log('   ✅ File uploaded to QMetry!');
+
+  return { trackingId: step1Result.trackingId };
 }
 
 // ─── Check Import Status ────────────────────────────────────────────────────
@@ -272,18 +294,10 @@ async function main(): Promise<void> {
 
     if (importResult.trackingId) {
       console.log(`   Tracking ID: ${importResult.trackingId}`);
-      process.stdout.write('   Processing');
-
-      const status = await checkImportStatus(importResult.trackingId);
       console.log('');
-      console.log(`   ✅ Import completed!`);
-
-      if (status.testCycleId) {
-        console.log(`   📋 Test Cycle ID: ${status.testCycleId}`);
-      }
-      if (status.testSuiteId) {
-        console.log(`   📦 Test Suite ID: ${status.testSuiteId}`);
-      }
+      console.log(`   ✅ Results submitted to QMetry for processing!`);
+      console.log(`   📋 Check results in QMetry Test Management (may take 1-2 min to process)`);
+      console.log(`   🔗 ${QMETRY_BASE_URL}`);
     } else if (importResult.id) {
       console.log(`   ✅ Upload successful! ID: ${importResult.id}`);
     } else {
