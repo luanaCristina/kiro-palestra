@@ -1,0 +1,22 @@
+databases:
+  - name: appointment-scheduling-db
+    plan: free
+    databaseName: appointment_scheduling
+    user: kiro_user
+
+services:
+  - type: web
+    name: appointment-scheduling-api
+    runtime: node
+    plan: free
+    buildCommand: npm install && npm run build && npm run migrate:prod
+    startCommand: node dist/server.js
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: appointment-scheduling-db
+          property: connectionString
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: "3000"
