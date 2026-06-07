@@ -130,6 +130,34 @@ describe("Slot Calculator", () => {
       expect(slots[4].startTime.getMinutes()).toBe(0);
     });
 
+    it("should return slots with exactly 3,600,000ms difference for duration 60", () => {
+      const ranges: AvailabilityRange[] = [
+        { dayOfWeek: futureDateDayOfWeek, startTime: "09:00", endTime: "11:00" },
+      ];
+
+      const slots = calculateAvailableSlots(ranges, [], futureDate, 60);
+
+      expect(slots.length).toBeGreaterThan(0);
+      for (const slot of slots) {
+        const diff = slot.endTime.getTime() - slot.startTime.getTime();
+        expect(diff).toBe(3_600_000);
+      }
+    });
+
+    it("should return slots with exactly 1,800,000ms difference for duration 30", () => {
+      const ranges: AvailabilityRange[] = [
+        { dayOfWeek: futureDateDayOfWeek, startTime: "09:00", endTime: "10:00" },
+      ];
+
+      const slots = calculateAvailableSlots(ranges, [], futureDate, 30);
+
+      expect(slots.length).toBeGreaterThan(0);
+      for (const slot of slots) {
+        const diff = slot.endTime.getTime() - slot.startTime.getTime();
+        expect(diff).toBe(1_800_000);
+      }
+    });
+
     it("should ensure slot end time does not exceed availability boundary", () => {
       const ranges: AvailabilityRange[] = [
         { dayOfWeek: futureDateDayOfWeek, startTime: "09:00", endTime: "09:45" },
