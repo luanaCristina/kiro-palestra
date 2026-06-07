@@ -26,6 +26,16 @@ const config: Config = {
   ],
   coverageDirectory: 'coverage',
   verbose: true,
+  reporters: [
+    'default',
+    ['jest-junit', {
+      outputDirectory: './test-results',
+      outputName: 'junit-results.xml',
+      classNameTemplate: '{classname}',
+      titleTemplate: '{title}',
+      ancestorSeparator: ' › ',
+      suiteNameTemplate: '{filepath}',
+    }],
+  ],
 };
-
 export default config;

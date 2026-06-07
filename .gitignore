@@ -32,3 +32,6 @@ npm-debug.log*
 
 .idea/kotlinNotebook.xml
 .idea/
+
+# Test results (JUnit XML for QMetry upload)
+test-results/
