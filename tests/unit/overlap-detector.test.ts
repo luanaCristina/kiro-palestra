@@ -38,6 +38,15 @@ describe("intervalsOverlap", () => {
     expect(intervalsOverlap(startA, endA, startB, endB)).toBe(true);
   });
 
+  it("should detect overlap for identical intervals", () => {
+    const startA = new Date("2024-06-01T09:00:00Z");
+    const endA = new Date("2024-06-01T10:00:00Z");
+    const startB = new Date("2024-06-01T09:00:00Z");
+    const endB = new Date("2024-06-01T10:00:00Z");
+
+    expect(intervalsOverlap(startA, endA, startB, endB)).toBe(true);
+  });
+
   it("should detect overlap when one interval is fully contained in the other", () => {
     const startA = new Date("2024-06-01T09:00:00Z");
     const endA = new Date("2024-06-01T12:00:00Z");

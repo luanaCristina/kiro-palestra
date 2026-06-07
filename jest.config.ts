@@ -8,9 +8,14 @@ const config: Config = {
     '**/*.test.ts',
     '**/*.property.test.ts',
   ],
+  setupFiles: ['<rootDir>/tests/setup/jest.setup.ts'],
   transform: {
-    '^.+\\.ts$': 'ts-jest',
+    '^.+\\.[tj]sx?$': ['ts-jest', { tsconfig: { allowJs: true } }],
+    '^.+\\.mjs$': ['ts-jest', { tsconfig: { allowJs: true } }],
   },
+  transformIgnorePatterns: [
+    'node_modules/(?!(@exodus|@asamuzakjp|@csstools|html-encoding-sniffer|parse5|entities|whatwg-|tr46|webidl-conversions|saxes|xml-name-validator|rrweb-cssom|data-urls|decimal\\.js))',
+  ],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
   },
