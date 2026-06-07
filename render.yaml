@@ -9,7 +9,7 @@ services:
     name: appointment-scheduling-api
     runtime: node
     plan: free
-    buildCommand: npm install && npm run build && npm run migrate:prod
+    buildCommand: npm install && npm run build
     startCommand: node dist/server.js
     envVars:
       - key: DATABASE_URL
