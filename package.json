@@ -10,7 +10,7 @@
     "test": "jest --run-in-band",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
-    "test:qmetry": "jest --run-in-band && npx ts-node scripts/qmetry-upload.ts",
+    "test:qmetry": "npx ts-node scripts/qmetry-upload.ts",
     "test:report": "jest --run-in-band",
     "migrate": "ts-node src/config/migrate.ts",
     "migrate:prod": "node dist/config/migrate.js"
