@@ -108,9 +108,41 @@ function parseResults(xmlPath: string): TestResult[] {
   return results;
 }
 
+// ─── XML Transformer ────────────────────────────────────────────────────────
+
+/**
+ * Transforms test results into a JUnit XML where each test is its own <testsuite>.
+ * QMetry for Jira treats each <testsuite> as one test case.
+ * This ensures all 183 tests appear as individual test cases in QMetry.
+ */
+function transformXmlForQMetry(results: TestResult[], cycleName: string): string {
+  const escXml = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;');
+
+  const totalFail = results.filter(r => r.status === 'Fail').length;
+  let xml = `<?xml version="1.0" encoding="UTF-8"?>\n`;
+  xml += `<testsuites name="${escXml(cycleName)}" tests="${results.length}" failures="${totalFail}" errors="0">\n`;
+
+  for (const r of results) {
+    const isFail = r.status === 'Fail';
+    const suiteName = `[${r.suite}] ${r.name}`;
+    xml += `  <testsuite name="${escXml(suiteName)}" tests="1" failures="${isFail ? 1 : 0}" errors="0" time="${r.time}">\n`;
+    xml += `    <testcase classname="${escXml(r.className)}" name="${escXml(r.name)}" time="${r.time}"`;
+    if (isFail) {
+      xml += `>\n      <failure message="${escXml(r.error || 'Test failed')}">${escXml(r.error || '')}</failure>\n    </testcase>\n`;
+    } else {
+      xml += `/>\n`;
+    }
+    xml += `  </testsuite>\n`;
+  }
+
+  xml += `</testsuites>\n`;
+  return xml;
+}
+
 // ─── QMetry Upload ──────────────────────────────────────────────────────────
 
-async function uploadToQMetry(cycleName: string): Promise<{ trackingId: string } | null> {
+async function uploadToQMetry(cycleName: string, xmlPath?: string): Promise<{ trackingId: string } | null> {
+  const filePath = xmlPath || RESULTS_FILE;
   const url = `${QMETRY_BASE_URL}/rest/api/automation/importresult`;
 
   // Step 1: Request upload URL
@@ -140,7 +172,7 @@ async function uploadToQMetry(cycleName: string): Promise<{ trackingId: string }
 
   // Step 2: Upload XML via curl (QMetry requires Content-Type: multipart/form-data for S3)
   const code = execSync(
-    `curl -s -o /dev/null -w "%{http_code}" -X PUT "${uploadUrl}" -H "Content-Type: multipart/form-data" -T "${RESULTS_FILE}"`,
+    `curl -s -o /dev/null -w "%{http_code}" -X PUT "${uploadUrl}" -H "Content-Type: multipart/form-data" -T "${filePath}"`,
     { encoding: 'utf-8' }
   ).trim();
 
@@ -253,9 +285,15 @@ async function main(): Promise<void> {
   const failed = results.filter(r => r.status === 'Fail');
   console.log(`       ${results.length} total | ${passed.length} pass | ${failed.length} fail`);
 
+  // Transform XML: QMetry treats each <testsuite> as 1 test case.
+  // We need 183 testsuites (one per test) instead of 22.
+  const transformedXml = transformXmlForQMetry(results, cycleName);
+  const transformedPath = path.join(PROJECT_ROOT, 'test-results', 'qmetry-upload.xml');
+  fs.writeFileSync(transformedPath, transformedXml);
+
   // Step 3: Upload to QMetry
   console.log('  📤 [3/4] Uploading to QMetry...');
-  const upload = await uploadToQMetry(cycleName);
+  const upload = await uploadToQMetry(cycleName, transformedPath);
   if (upload) {
     console.log(`  ✅ Uploaded! Tracking: ${upload.trackingId}`);
   } else {
