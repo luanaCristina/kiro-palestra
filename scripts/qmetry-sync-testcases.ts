@@ -265,7 +265,11 @@ async function fallbackImport(tests: ParsedTest[]): Promise<void> {
       'Content-Type': 'application/json',
       'apiKey': QMETRY_API_KEY,
     },
-    body: JSON.stringify({ format: 'JUNIT' }),
+    body: JSON.stringify({
+      format: 'JUNIT',
+      testCaseFolder: '/Regression',
+      isMatchingRequired: true,
+    }),
   });
 
   if (!step1Response.ok) {

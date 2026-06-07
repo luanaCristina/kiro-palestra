@@ -132,6 +132,7 @@ async function importViaAutomationAPI(
   // Step 1: Get upload URL from QMetry (QMetry for Jira Cloud uses 2-step process)
   const payload: any = {
     format: 'JUNIT',
+    testCaseFolder: '/Regression',
     testCycleToReuse: '',
     environment: '',
     build: '',
