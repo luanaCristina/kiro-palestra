@@ -5,6 +5,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import app from './app';
 import { pool } from './config/database';
+import { seedDemoData } from './config/seed';
 
 async function runMigrationsOnStartup(): Promise<void> {
   const migrationsDir = path.resolve(__dirname, '../migrations');
@@ -42,12 +43,13 @@ async function runMigrationsOnStartup(): Promise<void> {
 const PORT = process.env.PORT || 3000;
 
 runMigrationsOnStartup()
+  .then(() => seedDemoData())
   .then(() => {
     app.listen(PORT, () => {
       console.log(`Server running on port ${PORT}`);
     });
   })
   .catch((err) => {
-    console.error('Failed to run migrations:', err);
+    console.error('Failed to start server:', err);
     process.exit(1);
   });
