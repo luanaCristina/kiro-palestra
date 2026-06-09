@@ -22,7 +22,8 @@
 5. Integração com Jira, Confluence, GitHub, QMetry
 6. Thoughtworks + IA: como trabalhamos
 7. Dicas práticas: como usar Kiro sem gastar créditos à toa
-8. Instalação e pricing
+8. Kiro vs Copilot vs Gemini vs Cursor — comparativo
+9. Instalação e pricing
 
 ---
 
@@ -300,7 +301,88 @@ Cada interação gasta créditos. Como maximizar:
 
 ---
 
-## 8. 📦 Instalação e Pricing
+## 8. ⚔️ Kiro vs Outras Ferramentas de IA
+
+### A IDE do Kiro
+
+O Kiro é construído sobre o **Code OSS** (a mesma base open-source do Visual Studio Code). Isso significa:
+
+- 🎨 **Interface idêntica ao VS Code** — mesma aparência, atalhos, paleta de comandos
+- 📦 **Importa todas suas extensões** do VS Code (ESLint, Prettier, GitLens, etc.)
+- ⚙️ **Importa configurações** — settings.json, keybindings, temas, snippets
+- 🖥️ **CLI disponível** — `kiro` no terminal para automações e CI/CD
+- 🌐 **Versão Web** — acesse via browser em [app.kiro.dev](https://app.kiro.dev)
+
+> **Zero curva de aprendizado na IDE** — se você usa VS Code, já sabe usar o Kiro.
+
+### Comparativo: Kiro vs Copilot vs Gemini vs Cursor
+
+| Feature | **Kiro** | **GitHub Copilot** | **Gemini Code Assist** | **Cursor** |
+|---------|----------|-------------------|----------------------|-----------|
+| **Base da IDE** | Code OSS (VS Code) | Extension no VS Code | Extension no VS Code | Fork do VS Code |
+| **Modelo de IA** | Claude (Anthropic) + modelos open-weight | GPT-4o (OpenAI) | Gemini (Google) | Claude + GPT-4 + outros |
+| **Spec-Driven Dev** | ✅ Nativo (Requirements → Design → Tasks) | ❌ | ❌ | ❌ |
+| **Agent Hooks** | ✅ Automações event-driven | ❌ | ❌ | ❌ |
+| **Agent Steering** | ✅ Contexto persistente via .md | ❌ | ❌ | .cursorrules (similar) |
+| **MCP (integrações)** | ✅ Nativo (Jira, Confluence, GitHub, etc.) | ❌ | ❌ | ✅ (limitado) |
+| **Executa código** | ✅ Roda testes, builds, deploy | Parcial | Parcial | ✅ |
+| **Cria/edita Jira** | ✅ Via MCP | ❌ | ❌ | ❌ |
+| **Cria páginas Confluence** | ✅ Via MCP | ❌ | ❌ | ❌ |
+| **Push pro GitHub** | ✅ Nativo | Via extensão | Via extensão | ✅ |
+| **Import settings VS Code** | ✅ Completo | N/A (é extensão) | N/A (é extensão) | ✅ |
+| **CLI** | ✅ `kiro` | `gh copilot` | ❌ | ❌ |
+| **Versão Web** | ✅ app.kiro.dev | ❌ | ❌ | ❌ |
+| **Plano gratuito** | 50 créditos/mês | ❌ ($10/mês min) | Limitado | 500 requests free |
+| **Preço Pro** | $20/mês | $10/mês | $19/mês | $20/mês |
+
+### Onde o Kiro se destaca
+
+| Diferencial | Por que importa para QA |
+|-------------|------------------------|
+| **Spec-Driven** | Transforma requisito em testes de forma estruturada |
+| **MCP nativo** | Lê Jira + Confluence + código ao mesmo tempo |
+| **Hooks** | Automatiza validações quando salva/cria arquivos |
+| **Steering** | Novos membros já têm contexto completo do projeto |
+| **Execução completa** | Não só sugere código — roda testes, faz deploy, cria cards |
+
+### Onde outras ferramentas se destacam
+
+| Ferramenta | Vantagem |
+|-----------|----------|
+| **Copilot** | Melhor autocomplete inline (Tab-Tab), mais barato |
+| **Gemini** | Integração nativa com Google Cloud, contexto de 1M tokens |
+| **Cursor** | Multi-modelo (escolhe Claude, GPT-4, etc.), Tab completion |
+
+### O modelo de IA: Claude (Anthropic)
+
+O Kiro usa o **Claude** da Anthropic como modelo principal:
+- Claude Sonnet 4.5 (no Free tier)
+- Modelos premium nos planos pagos
+- Conhecido por: raciocínio lógico forte, seguir instruções complexas, código de alta qualidade
+- Mesmo modelo do Cursor (quando selecionado) e do Claude.ai
+
+### CLI do Kiro
+
+O Kiro também funciona via terminal — útil para CI/CD e automações:
+
+```bash
+# Instalar CLI
+# (vem junto com a IDE ou pode instalar separadamente)
+
+# Usar no terminal
+kiro chat "explica esse código"
+kiro spec create --feature user-auth
+kiro run task 1.1
+```
+
+Ideal para:
+- Pipelines de CI/CD que precisam de contexto de IA
+- Scripts de automação em shell
+- Ambientes remotos (SSH) sem interface gráfica
+
+---
+
+## 9. 📦 Instalação e Pricing
 
 ### Como instalar o Kiro
 
