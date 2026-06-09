@@ -22,8 +22,9 @@
 5. Integração com Jira, Confluence, GitHub, QMetry
 6. Thoughtworks + IA: como trabalhamos
 7. Dicas práticas: como usar Kiro sem gastar créditos à toa
-8. Kiro vs Copilot vs Gemini vs Cursor — comparativo
-9. Instalação e pricing
+8. **Segurança e privacidade: posso usar IA em projetos de clientes?**
+9. Kiro vs Copilot vs Gemini vs Cursor — comparativo
+10. Instalação e pricing
 
 ---
 
@@ -301,7 +302,80 @@ Cada interação gasta créditos. Como maximizar:
 
 ---
 
-## 8. ⚔️ Kiro vs Outras Ferramentas de IA
+## 9. 🔒 Segurança e Privacidade de Dados
+
+### A pergunta que todo mundo faz:
+> "Se eu uso o Kiro no projeto do cliente, estou expondo dados sensíveis? A IA usa nosso código para treinar?"
+
+### Resposta curta: **Não.**
+
+### Política de dados do Kiro (AWS)
+
+| Aspecto | Plano Free | Plano Pro/Pro+/Power |
+|---------|-----------|---------------------|
+| **Dados usados para treinar IA?** | ⚠️ Pode ser usado para melhorar o serviço | ❌ **NÃO** é usado para treinar modelos |
+| **Código armazenado?** | Temporariamente durante a sessão | Temporariamente durante a sessão |
+| **Dados enviados para terceiros?** | Não | Não |
+| **Telemetria** | Métricas de uso (opt-out disponível) | Métricas de uso (opt-out disponível) |
+
+### O que a documentação oficial diz
+
+Segundo a [documentação do Kiro](https://kiro.dev/docs/privacy-and-security/):
+
+- **Infraestrutura AWS**: O Kiro roda sobre a infraestrutura de segurança da AWS
+- **Shared Responsibility Model**: AWS protege a infra, você controla o conteúdo
+- **Criptografia**: Dados em trânsito (TLS) e em repouso (AWS KMS)
+- **Planos pagos**: Conteúdo **NÃO** é usado para treinar foundation models
+- **Compliance**: Segue padrões AWS de segurança e compliance
+
+### Para projetos empresariais: recomendações
+
+| Prática | Como implementar |
+|---------|-----------------|
+| **Use plano pago** | Garante opt-out de uso para treinamento |
+| **Não cole secrets no chat** | Use referências por nome, não valores (`$DB_PASSWORD` em vez do valor real) |
+| **Use .env para credenciais** | Kiro lê mas não ecoa valores de secrets no output |
+| **.gitignore correto** | `.env`, tokens, keys nunca vão pro repositório |
+| **MCP com tokens rotativos** | Use tokens com escopo mínimo para cada integração |
+| **Steering sem dados sensíveis** | Descreva padrões, não dados reais de clientes |
+| **SSO corporativo** | Planos enterprise suportam IAM Identity Center |
+
+### Comparação de privacidade com outras ferramentas
+
+| Ferramenta | Usa código para treinar? | Opt-out disponível? |
+|-----------|--------------------------|---------------------|
+| **Kiro (Pro+)** | ❌ Não | ✅ (padrão no pago) |
+| **GitHub Copilot Business** | ❌ Não | ✅ (padrão no Business) |
+| **GitHub Copilot Individual** | ⚠️ Sim (por padrão) | ✅ (pode desligar) |
+| **Gemini Code Assist** | ❌ Não (enterprise) | ✅ |
+| **Cursor** | ⚠️ Depende do plano | Parcial |
+| **ChatGPT/Claude web** | ⚠️ Sim (pode ser usado) | ✅ (precisa opt-out) |
+
+### Boas práticas que seguimos na Thoughtworks
+
+1. **Classificação de dados** — Antes de usar IA, classificamos o que pode e o que não pode ser compartilhado
+2. **Plano empresarial** — Projetos de clientes usam planos que garantem não-treinamento
+3. **Review de output** — IA gera, humano revisa antes de commitar
+4. **Audit trail** — Tudo que o Kiro faz fica no histórico do chat (rastreável)
+5. **Princípio do menor privilégio** — MCP tokens com escopo mínimo (read-only quando possível)
+6. **Nenhum dado de produção** — Usamos dados fictícios/mock para demos e testes
+
+### O que NUNCA colocar no chat do Kiro (ou qualquer IA)
+- ❌ Credenciais reais de produção (senhas, tokens, API keys)
+- ❌ Dados pessoais de clientes reais (PII: CPF, email real de clientes)
+- ❌ Informações financeiras ou de compliance do cliente
+- ❌ Código proprietário confidencial sem autorização
+
+### O que é SEGURO usar
+- ✅ Código open-source ou com permissão do cliente
+- ✅ Dados fictícios/de teste
+- ✅ Padrões e arquitetura (sem dados reais)
+- ✅ Documentação pública do projeto
+- ✅ Referências a variáveis de ambiente (sem os valores)
+
+---
+
+## 10. ⚔️ Kiro vs Outras Ferramentas de IA
 
 ### A IDE do Kiro
 
@@ -382,7 +456,7 @@ Ideal para:
 
 ---
 
-## 9. 📦 Instalação e Pricing
+## 11. 📦 Instalação e Pricing
 
 ### Como instalar o Kiro
 
