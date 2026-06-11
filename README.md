@@ -6,7 +6,21 @@ API REST + Frontend para agendamento de consultas médicas, com suporte a múlti
 
 ---
 
-## 📋 Índice
+## � Links do Projeto
+
+| Recurso | Link |
+|---------|------|
+| 🎬 **Slides da Palestra** | [GenSpark - Palestra Kiro + MCP](https://www.genspark.ai/slides?project_id=241ee489-f057-408d-941a-a9646258dca2&deck=palestra-kiro-mcp) *(requer login no [genspark.ai](https://www.genspark.ai))* |
+| 📋 **Board Jira** | [SDC - Sistema de Consulta](https://luanacroft.atlassian.net/jira/software/projects/SDC/boards/5) |
+| 🧪 **QMetry - Test Cases** | [Pasta Regression](https://luanacroft.atlassian.net/jira/apps/8b7b816c-2b85-4e73-ae22-aa0e6f0407ec/53926dc7-47de-4878-9fc2-5033dde60120/Manage/TestCase?folderId=2531077&projectId=10068&projectKey=SDC) |
+| 🔄 **QMetry - Test Cycles** | [Execuções de Teste](https://luanacroft.atlassian.net/jira/apps/8b7b816c-2b85-4e73-ae22-aa0e6f0407ec/53926dc7-47de-4878-9fc2-5033dde60120/Manage/TestCycle?projectId=10068&projectKey=SDC) |
+| 📄 **Confluence - Documentação** | [Automação de Testes - Guia Completo](https://luanacroft.atlassian.net/wiki/spaces/CM/pages/2752514/Automa+o+de+Testes+-+Guia+Completo) |
+| 🌐 **App Online (Render)** | [appointment-scheduling-api.onrender.com](https://appointment-scheduling-api.onrender.com) |
+| 💻 **Repositório GitHub** | [github.com/luanaCristina/kiro-palestra](https://github.com/luanaCristina/kiro-palestra) |
+
+---
+
+## �📋 Índice
 
 - [Rodando localmente](#-rodando-localmente)
 - [Acessando a versão online (Render)](#-acessando-a-versão-online-render)
