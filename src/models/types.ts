@@ -63,3 +63,13 @@ export interface AvailabilitySchedule {
   doctorId: string;
   ranges: AvailabilityRange[];
 }
+
+/**
+ * Represents the geographic location of a doctor's clinic.
+ */
+export interface ClinicLocation {
+  doctorId: string;
+  address: string;
+  latitude: number;
+  longitude: number;
+}

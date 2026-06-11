@@ -45,6 +45,8 @@ export const ERROR_CODES = {
   NO_AVAILABILITY: "NO_AVAILABILITY",
   /** Requested time outside doctor's hours */
   OUTSIDE_AVAILABILITY: "OUTSIDE_AVAILABILITY",
+  /** Latitude or longitude out of valid range */
+  INVALID_COORDINATES: "INVALID_COORDINATES",
 } as const;
 
 /**

@@ -6,59 +6,59 @@ This plan implements the clinic location feature following the project's layered
 
 ## Tasks
 
-- [ ] 1. Database migration and data layer setup
-  - [ ] 1.1 Create database migration file `migrations/005_add_clinic_location_columns.sql`
+- [x] 1. Database migration and data layer setup
+  - [x] 1.1 Create database migration file `migrations/005_add_clinic_location_columns.sql`
     - Add `clinic_address VARCHAR(500)` nullable column to `doctors` table
     - Add `latitude DECIMAL(10,7)` nullable column to `doctors` table
     - Add `longitude DECIMAL(10,7)` nullable column to `doctors` table
     - Use `ALTER TABLE ... ADD COLUMN IF NOT EXISTS` for idempotent execution
     - _Requirements: 6.1, 6.2, 6.3_
 
-  - [ ] 1.2 Add `ClinicLocation` interface to `src/models/types.ts` and `INVALID_COORDINATES` error code to `src/models/errors.ts`
+  - [x] 1.2 Add `ClinicLocation` interface to `src/models/types.ts` and `INVALID_COORDINATES` error code to `src/models/errors.ts`
     - Define `ClinicLocation` interface with `doctorId`, `address`, `latitude`, `longitude`
     - Add `INVALID_COORDINATES` to the `ERROR_CODES` constant
     - _Requirements: 1.3, 1.4, 1.5, 1.6_
 
-  - [ ] 1.3 Create Zod validation schema in `src/validation/location.schema.ts`
+  - [x] 1.3 Create Zod validation schema in `src/validation/location.schema.ts`
     - Define `locationSchema` with `address` (string, min 1, max 500), `latitude` (number, min -90, max 90), `longitude` (number, min -180, max 180)
     - Export schema for use by route validation middleware
     - _Requirements: 1.3, 1.4, 1.5, 1.6, 2.2, 2.3_
 
-- [ ] 2. Repository and service implementation
-  - [ ] 2.1 Add location repository functions to `src/repositories/doctor.repository.ts`
+- [x] 2. Repository and service implementation
+  - [x] 2.1 Add location repository functions to `src/repositories/doctor.repository.ts`
     - Implement `updateLocation(doctorId, address, latitude, longitude)` — UPDATE doctors SET clinic_address, latitude, longitude, updated_at WHERE id
     - Implement `getLocation(doctorId)` — SELECT clinic_address, latitude, longitude FROM doctors WHERE id
     - Map snake_case DB columns to camelCase TypeScript interface
     - _Requirements: 1.1, 2.1, 2.5, 3.1_
 
-  - [ ] 2.2 Create location service at `src/services/location.service.ts`
+  - [x] 2.2 Create location service at `src/services/location.service.ts`
     - Implement `updateLocation(doctorId, data)` — verify doctor exists, delegate to repository, return ClinicLocation
     - Implement `getLocation(doctorId)` — verify doctor exists, return ClinicLocation or null
     - Throw `DOCTOR_NOT_FOUND` if doctorId does not match any record
     - Follow existing `createServiceError` pattern from doctor.service.ts
     - _Requirements: 2.1, 2.4, 3.1, 3.2, 3.3_
 
-- [ ] 3. Route layer and main router wiring
-  - [ ] 3.1 Create location routes at `src/routes/location.routes.ts`
+- [x] 3. Route layer and main router wiring
+  - [x] 3.1 Create location routes at `src/routes/location.routes.ts`
     - Implement `PUT /api/doctors/:doctorId/location` — validate body with locationSchema, call service.updateLocation, return 200 with `{ location }` 
     - Implement `GET /api/doctors/:doctorId/location` — call service.getLocation, return 200 with `{ location }` (or `{ location: null }`)
     - Use existing validate middleware for Zod schema validation
     - _Requirements: 2.1, 2.2, 2.3, 2.4, 3.1, 3.2, 3.3_
 
-  - [ ] 3.2 Create config routes at `src/routes/config.routes.ts`
+  - [x] 3.2 Create config routes at `src/routes/config.routes.ts`
     - Implement `GET /api/config/maps` — read `GOOGLE_MAPS_API_KEY` from `process.env`, return `{ apiKey }` or `{ apiKey: null }`
     - _Requirements: 5.1, 5.3_
 
-  - [ ] 3.3 Register new routes in `src/routes/index.ts`
+  - [x] 3.3 Register new routes in `src/routes/index.ts`
     - Import and mount location routes under `/api/doctors`
     - Import and mount config routes under `/api/config`
     - _Requirements: 2.1, 3.1, 5.3_
 
-- [ ] 4. Checkpoint - Ensure backend compiles and routes are wired
+- [x] 4. Checkpoint - Ensure backend compiles and routes are wired
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 5. Frontend map integration
-  - [ ] 5.1 Add map section to `public/index.html` in the Agendamento tab
+- [x] 5. Frontend map integration
+  - [x] 5.1 Add map section to `public/index.html` in the Agendamento tab
     - Add `<div id="mapSection">` with address display, loading indicator, map container, and fallback message
     - Implement JavaScript to call `GET /api/doctors/:doctorId/location` when a doctor is selected
     - Implement JavaScript to call `GET /api/config/maps` and dynamically load Google Maps JS API
@@ -66,11 +66,11 @@ This plan implements the clinic location feature following the project's layered
     - Handle error states: no location, API key missing, map load failure
     - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5, 5.2_
 
-  - [ ] 5.2 Update `.env.example` with `GOOGLE_MAPS_API_KEY` placeholder
+  - [x] 5.2 Update `.env.example` with `GOOGLE_MAPS_API_KEY` placeholder
     - Add `GOOGLE_MAPS_API_KEY=your_google_maps_api_key_here` to .env.example
     - _Requirements: 5.1_
 
-- [ ] 6. Checkpoint - Ensure full feature compiles and frontend renders
+- [x] 6. Checkpoint - Ensure full feature compiles and frontend renders
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 7. Unit and property-based tests
@@ -117,7 +117,7 @@ This plan implements the clinic location feature following the project's layered
     - Test GET /api/config/maps returns null when env var is unset
     - _Requirements: 5.1, 5.3_
 
-- [ ] 9. Final checkpoint - Ensure all tests pass
+- [x] 9. Final checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 ## Notes

@@ -1,13 +1,17 @@
 import { Router, Request, Response } from 'express';
 import doctorRoutes from './doctor.routes';
 import appointmentRoutes from './appointment.routes';
+import locationRoutes from './location.routes';
+import configRoutes from './config.routes';
 import { query } from '../config/database';
 import { getHolidaysForState, isHoliday, BRAZILIAN_STATES } from '../modules/holidays';
 
 const router = Router();
 
 router.use('/doctors', doctorRoutes);
+router.use('/doctors', locationRoutes);
 router.use('/appointments', appointmentRoutes);
+router.use('/config', configRoutes);
 
 /**
  * GET /api/patients

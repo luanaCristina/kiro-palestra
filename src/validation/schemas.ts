@@ -2,6 +2,23 @@ import { z } from "zod";
 import { SPECIALTIES, APPOINTMENT_TYPES } from "../models/enums";
 
 /**
+ * Validates a clinic location input (address + coordinates).
+ * Latitude must be between -90 and 90.
+ * Longitude must be between -180 and 180.
+ */
+export const locationSchema = z.object({
+  address: z.string().min(1, { message: "address is required" }),
+  latitude: z
+    .number({ required_error: "latitude is required", invalid_type_error: "latitude must be a number" })
+    .min(-90, { message: "latitude must be between -90 and 90" })
+    .max(90, { message: "latitude must be between -90 and 90" }),
+  longitude: z
+    .number({ required_error: "longitude is required", invalid_type_error: "longitude must be a number" })
+    .min(-180, { message: "longitude must be between -180 and 180" })
+    .max(180, { message: "longitude must be between -180 and 180" }),
+});
+
+/**
  * Validates that a value is a supported medical specialty.
  */
 export const specialtySchema = z.enum(SPECIALTIES as unknown as [string, ...string[]], {

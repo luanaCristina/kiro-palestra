@@ -2,39 +2,47 @@
   "mcpServers": {
     "github": {
       "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-github"
+      ],
       "env": {
         "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PERSONAL_TOKEN}"
-      }
+      },
+      "disabled": false,
+      "autoApprove": []
     },
-    "atlassian": {
-      "command": "uvx",
-      "args": ["mcp-atlassian"],
+    "atlassian-cloud": {
+      "url": "https://mcp.atlassian.com/v1/mcp",
       "env": {
-        "JIRA_URL": "${JIRA_PERSONAL_URL}",
-        "JIRA_USERNAME": "${JIRA_PERSONAL_USERNAME}",
-        "JIRA_API_TOKEN": "${JIRA_PERSONAL_TOKEN}",
-        "CONFLUENCE_URL": "${CONFLUENCE_PERSONAL_URL}",
-        "CONFLUENCE_USERNAME": "${CONFLUENCE_PERSONAL_USERNAME}",
-        "CONFLUENCE_API_TOKEN": "${CONFLUENCE_PERSONAL_TOKEN}"
-      }
+        "ATLASSIAN_EMAIL": "${ATLASSIAN_EMAIL}",
+        "ATLASSIAN_DOMAIN": "${ATLASSIAN_DOMAIN}",
+        "ATLASSIAN_API_TOKEN": "${ATLASSIAN_API_TOKEN}"
+      },
+      "disabled": false,
+      "autoApprove": []
     },
     "smartbear": {
       "command": "npx",
-      "args": ["-y", "@smartbear/mcp@latest"],
+      "args": [
+        "-y",
+        "@smartbear/mcp@latest"
+      ],
       "env": {
-        "QMETRY_API_KEY": "${QMETRY_PERSONAL_API_KEY}",
-        "QMETRY_BASE_URL": "${QMETRY_PERSONAL_BASE_URL}"
-      }
+        "QMETRY_API_KEY": "${QMETRY_API_KEY}",
+        "QMETRY_BASE_URL": "https://qtmcloud.qmetry.com"
+      },
+      "disabled": false,
+      "autoApprove": []
     },
-    "bitbucket": {
-      "disabled": true
-    },
-    "sonarqube": {
-      "disabled": true
-    },
-    "figma": {
-      "disabled": true
+    "fetch": {
+      "command": "uvx",
+      "args": [
+        "mcp-server-fetch"
+      ],
+      "env": {},
+      "disabled": false,
+      "autoApprove": []
     }
   }
 }

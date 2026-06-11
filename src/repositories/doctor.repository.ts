@@ -1,6 +1,6 @@
 import { pool, query } from '../config/database';
 import { Specialty } from '../models/enums';
-import { AvailabilityRange, Doctor } from '../models/types';
+import { AvailabilityRange, ClinicLocation, Doctor } from '../models/types';
 
 /**
  * Search doctors by specialty, returning a maximum of 50 results.
@@ -102,6 +102,85 @@ export async function updateAvailability(
   } finally {
     client.release();
   }
+}
+
+/**
+ * Update a doctor's clinic location (address + coordinates).
+ */
+export async function updateDoctorLocation(
+  doctorId: string,
+  address: string,
+  latitude: number,
+  longitude: number
+): Promise<ClinicLocation> {
+  const result = await query<{
+    id: string;
+    clinic_address: string;
+    latitude: string;
+    longitude: string;
+  }>(
+    `UPDATE doctors
+     SET clinic_address = $2, latitude = $3, longitude = $4, updated_at = NOW()
+     WHERE id = $1
+     RETURNING id, clinic_address, latitude, longitude`,
+    [doctorId, address, latitude, longitude]
+  );
+
+  const row = result.rows[0];
+  return mapRowToClinicLocation(row);
+}
+
+/**
+ * Retrieve a doctor's clinic location by their ID.
+ * Returns null if the doctor has no location set.
+ */
+export async function getDoctorLocation(
+  doctorId: string
+): Promise<ClinicLocation | null> {
+  const result = await query<{
+    id: string;
+    clinic_address: string | null;
+    latitude: string | null;
+    longitude: string | null;
+  }>(
+    'SELECT id, clinic_address, latitude, longitude FROM doctors WHERE id = $1',
+    [doctorId]
+  );
+
+  if (result.rows.length === 0) {
+    return null;
+  }
+
+  const row = result.rows[0];
+
+  // Doctor exists but has no location data
+  if (row.clinic_address === null || row.latitude === null || row.longitude === null) {
+    return null;
+  }
+
+  return mapRowToClinicLocation(row as {
+    id: string;
+    clinic_address: string;
+    latitude: string;
+    longitude: string;
+  });
+}
+
+/**
+ * Maps a database row to a ClinicLocation interface (snake_case → camelCase).
+ */
+function mapRowToClinicLocation(row: {
+  id: string;
+  clinic_address: string;
+  latitude: string;
+  longitude: string;
+}): ClinicLocation {
+  return {
+    doctorId: row.id,
+    address: row.clinic_address,
+    latitude: parseFloat(row.latitude),
+    longitude: parseFloat(row.longitude),
+  };
 }
 
 /**
