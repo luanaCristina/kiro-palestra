@@ -8,7 +8,6 @@ O Kiro funciona como o VS Code — você pode abrir múltiplas janelas com works
 
 | Instância | Workspace | MCP configurado |
 |-----------|-----------|-----------------|
-| **Trabalho (Natura)** | `/Users/luanacristina/projetos-natura/...` | Bitbucket corporativo |
 | **Pessoal (Palestra)** | `/Users/luanacristina/Documents/KiroProjeto` | GitHub + Jira + Confluence + QMetry pessoais |
 
 **Para abrir duas instâncias:**
@@ -118,15 +117,7 @@ Ele vai criar tudo automaticamente.
 
 ---
 
-## 5. Resumo visual da separação
-
-```
-┌─────────────────────────────────────────────────────┐
-│  Kiro - Janela 1 (TRABALHO)                         │
-│  Workspace: /projetos-natura/...                     │
-│  MCP: Bitbucket corporativo                         │
-│  ⚠️  Não mexer para a palestra                      │
-└─────────────────────────────────────────────────────┘
+## 5. Resumo visual ─────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────┐
 │  Kiro - Janela 2 (PALESTRA)                         │
