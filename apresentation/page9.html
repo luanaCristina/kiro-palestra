@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>MCP — Arquitetura</title>
+<link rel="stylesheet" href="../assets/chrome.css">
+<link rel="stylesheet" href="nav.css">
+</head>
+<body>
+<div class="slide-container" data-screen-label="09 MCP Arquitetura" style="position:relative; width:1920px; height:1080px; overflow:hidden; background:#ECF0F3;">
+
+  <div data-object="true" data-object-type="image"
+       style="position:absolute; left:80px; top:60px; width:280px; height:42px; display:flex; align-items:center; z-index:10;">
+    <div style="width:12px; height:42px; background:#F2617A; transform: skewX(-18deg); margin-right:12px;"></div>
+    <span style="font-family:'Inter',sans-serif; font-weight:700; font-size:32px; color:#003D4F; letter-spacing:-0.02em;">thoughtworks</span>
+  </div>
+  <div data-object="true" data-object-type="shape" style="position:absolute; left:80px; top:130px; width:1760px; height:2px; background:#003D4F; opacity:0.12; z-index:1;"></div>
+
+  <div data-object="true" data-object-type="textbox" style="position:absolute; left:80px; top:160px; z-index:10;">
+    <div style="font-family:'Inter',sans-serif; font-weight:700; font-size:18px; color:#F2617A; letter-spacing:0.22em; text-transform:uppercase;">★ MCP Deep Dive · 2 de 4</div>
+  </div>
+
+  <div data-object="true" data-object-type="textbox" style="position:absolute; left:80px; top:200px; width:1700px; z-index:10;">
+    <div style="font-family:'Inter',sans-serif; font-weight:800; font-size:80px; color:#003D4F; line-height:1.0; letter-spacing:-0.03em;">Como funciona — <span style="color:#F2617A;">arquitetura</span></div>
+  </div>
+
+  <!-- ARCHITECTURE DIAGRAM -->
+  <!-- Kiro client (left) -->
+  <div data-object="true" data-object-type="shape" style="position:absolute; left:140px; top:430px; width:380px; height:330px; background:#003D4F; border-radius:16px; box-shadow:0 12px 32px rgba(0,61,79,0.25); z-index:2;"></div>
+  <div data-object="true" data-object-type="textbox" style="position:absolute; left:180px; top:470px; width:300px; z-index:10;">
+    <div style="font-family:'Inter',sans-serif; font-weight:700; font-size:16px; color:#F2617A; letter-spacing:0.18em; text-transform:uppercase;">Client</div>
+    <div style="margin-top:8px; font-family:'Inter',sans-serif; font-weight:900; font-size:88px; color:#FFFFFF; line-height:1; letter-spacing:-0.03em;">KIRO</div>
+    <div style="margin-top:12px; font-family:'Inter',sans-serif; font-weight:500; font-size:22px; color:rgba(255,255,255,0.85); line-height:1.4;">IDE + modelo de IA<br>(Claude)</div>
+    <div style="margin-top:16px; padding-top:14px; border-top:1px solid rgba(255,255,255,0.15); font-family:'JetBrains Mono', monospace; font-weight:500; font-size:16px; color:#F2617A;">JSON-RPC 2.0</div>
+  </div>
+
+  <!-- Connection arrows in middle -->
+  <div data-object="true" data-object-type="shape" style="position:absolute; left:520px; top:550px; width:300px; height:8px; background:linear-gradient(90deg, #003D4F, #F2617A, #003D4F); border-radius:4px; z-index:1;"></div>
+  <div data-object="true" data-object-type="shape" style="position:absolute; left:520px; top:620px; width:300px; height:8px; background:linear-gradient(90deg, #F2617A, #003D4F, #F2617A); border-radius:4px; z-index:1;"></div>
+
+  <div data-object="true" data-object-type="textbox" style="position:absolute; left:530px; top:500px; width:280px; text-align:center; z-index:10;">
+    <div style="font-family:'Inter',sans-serif; font-weight:700; font-size:14px; color:#F2617A; letter-spacing:0.18em; text-transform:uppercase; background:#ECF0F3; display:inline-block; padding:0 12px;">MCP Protocol</div>
+  </div>
+  <div data-object="true" data-object-type="textbox" style="position:absolute; left:530px; top:565px; width:280px; text-align:center; z-index:10;">
+    <div style="font-family:'JetBrains Mono', monospace; font-weight:500; font-size:18px; color:#003D4F;">→ list_tools()</div>
+  </div>
+  <div data-object="true" data-object-type="textbox" style="position:absolute; left:530px; top:635px; width:280px; text-align:center; z-index:10;">
+    <div style="font-family:'JetBrains Mono', monospace; font-weight:500; font-size:18px; color:#003D4F;">← call_tool(args)</div>
+  </div>
+
+  <!-- MCP Servers (right - 5 stacked) -->
+  <div data-object="true" data-object-type="shape" style="position:absolute; left:820px; top:380px; width:540px; height:430px; background:#FFFFFF; border-radius:16px; border:2px solid #003D4F; z-index:1;"></div>
+  <div data-object="true" data-object-type="textbox" style="position:absolute; left:850px; top:400px; z-index:10;">
+    <div style="font-family:'Inter',sans-serif; font-weight:700; font-size:16px; color:#F2617A; letter-spacing:0.18em; text-transform:uppercase;">MCP Servers</div>
+  </div>
+
+  <div data-object="true" data-object-type="textbox" style="position:absolute; left:850px; top:440px; width:480px; z-index:10;">
+    <div style="display:flex; flex-direction:column; gap:10px; font-family:'Inter',sans-serif;">
+      <div style="display:flex; align-items:center; gap:14px; padding:14px 18px; background:#ECF0F3; border-radius:8px; border-left:5px solid #003D4F;">
+        <div style="font-size:30px;">📋</div>
+        <div><div style="font-weight:700; font-size:22px; color:#003D4F;">jira-mcp</div><div style="font-size:16px; color:#6B7682;">Cards, status, comentários</div></div>
+      </div>
+      <div style="display:flex; align-items:center; gap:14px; padding:14px 18px; background:#ECF0F3; border-radius:8px; border-left:5px solid #003D4F;">
+        <div style="font-size:30px;">📖</div>
+        <div><div style="font-weight:700; font-size:22px; color:#003D4F;">confluence-mcp</div><div style="font-size:16px; color:#6B7682;">Páginas, specs, ADRs</div></div>
+      </div>
+      <div style="display:flex; align-items:center; gap:14px; padding:14px 18px; background:#ECF0F3; border-radius:8px; border-left:5px solid #003D4F;">
+        <div style="font-size:30px;">🐙</div>
+        <div><div style="font-weight:700; font-size:22px; color:#003D4F;">github-mcp</div><div style="font-size:16px; color:#6B7682;">PRs, branches, commits</div></div>
+      </div>
+      <div style="display:flex; align-items:center; gap:14px; padding:14px 18px; background:#ECF0F3; border-radius:8px; border-left:5px solid #003D4F;">
+        <div style="font-size:30px;">🧪</div>
+        <div><div style="font-weight:700; font-size:22px; color:#003D4F;">qmetry-mcp</div><div style="font-size:16px; color:#6B7682;">Test cases, ciclos</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Far right: External APIs -->
+  <div data-object="true" data-object-type="shape" style="position:absolute; left:1360px; top:430px; width:50px; height:8px; background:#003D4F; border-radius:4px; z-index:1;"></div>
+  <div data-object="true" data-object-type="shape" style="position:absolute; left:1360px; top:500px; width:50px; height:8px; background:#003D4F; border-radius:4px; z-index:1;"></div>
+  <div data-object="true" data-object-type="shape" style="position:absolute; left:1360px; top:580px; width:50px; height:8px; background:#003D4F; border-radius:4px; z-index:1;"></div>
+  <div data-object="true" data-object-type="shape" style="position:absolute; left:1360px; top:660px; width:50px; height:8px; background:#003D4F; border-radius:4px; z-index:1;"></div>
+  <div data-object="true" data-object-type="shape" style="position:absolute; left:1360px; top:740px; width:50px; height:8px; background:#003D4F; border-radius:4px; z-index:1;"></div>
+
+  <div data-object="true" data-object-type="shape" style="position:absolute; left:1410px; top:380px; width:430px; height:430px; background:#003D4F; border-radius:16px; z-index:1;"></div>
+  <div data-object="true" data-object-type="textbox" style="position:absolute; left:1440px; top:400px; z-index:10;">
+    <div style="font-family:'Inter',sans-serif; font-weight:700; font-size:16px; color:#F2617A; letter-spacing:0.18em; text-transform:uppercase;">APIs reais</div>
+  </div>
+  <div data-object="true" data-object-type="textbox" style="position:absolute; left:1440px; top:440px; width:380px; z-index:10;">
+    <div style="display:flex; flex-direction:column; gap:14px; font-family:'Inter',sans-serif; font-weight:600; font-size:22px; color:#FFFFFF;">
+      <div>→ atlassian.com/api</div>
+      <div>→ atlassian.com/wiki</div>
+      <div>→ api.github.com</div>
+      <div>→ qmetry.com/api</div>
+      <div style="color:rgba(255,255,255,0.5); font-size:18px; font-style:italic;">→ qualquer outra…</div>
+    </div>
+  </div>
+
+  <!-- Bottom note -->
+  <div data-object="true" data-object-type="textbox" style="position:absolute; left:80px; top:880px; width:1780px; z-index:10;">
+    <div style="font-family:'Inter',sans-serif; font-weight:400; font-size:26px; color:#1A1A1A; line-height:1.4;">
+      <strong style="color:#003D4F;">Kiro</strong> não chama as APIs diretamente. Ele fala <strong style="color:#F2617A;">MCP</strong> com servers locais que traduzem para cada API — isolando credenciais, escopo e auditoria.
+    </div>
+  </div>
+
+  <div data-object="true" data-object-type="textbox" class="tw-footer on-light" style="z-index:10;">© 2026 Thoughtworks &nbsp;|&nbsp; Confidential</div>
+  <div data-object="true" data-object-type="textbox" class="tw-page-num on-light" style="z-index:10;">09</div>
+</div>
+<script src="nav.js"></script>
+</body>
+</html>
+

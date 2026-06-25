@@ -1,0 +1,128 @@
+/* ─── Slide Navigation ─────────────────────────────────────────────── */
+
+/* Make slides fill viewport responsively */
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #1a1a2e;
+}
+
+.slide-container {
+  transform-origin: top left;
+}
+
+/* Navigation bar */
+.slide-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 24px;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
+  z-index: 9999;
+  transition: opacity 0.3s;
+}
+
+.slide-nav:hover {
+  opacity: 1 !important;
+}
+
+.slide-nav a,
+.slide-nav button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 18px;
+  border: none;
+  border-radius: 6px;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.slide-nav .nav-prev {
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+}
+
+.slide-nav .nav-prev:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.slide-nav .nav-next {
+  background: #F2617A;
+  color: #fff;
+}
+
+.slide-nav .nav-next:hover {
+  background: #e04e68;
+}
+
+.slide-nav .nav-home {
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 12px;
+  padding: 6px 12px;
+}
+
+.slide-nav .nav-home:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+
+.slide-nav .nav-counter {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.6);
+  font-weight: 500;
+}
+
+.slide-nav .nav-disabled {
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+/* Keyboard hint */
+.slide-nav .nav-hint {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.4);
+  position: absolute;
+  bottom: 100%;
+  right: 24px;
+  padding: 4px 8px;
+  margin-bottom: 4px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.slide-nav:hover .nav-hint {
+  opacity: 1;
+}
+
+/* Responsive scaling */
+@media (max-width: 1920px) {
+  .slide-container {
+    transform: scale(var(--slide-scale, 1));
+  }
+}
+
+@media (max-width: 768px) {
+  .slide-nav {
+    padding: 8px 12px;
+  }
+  .slide-nav a,
+  .slide-nav button {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+}
