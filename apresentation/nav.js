@@ -121,13 +121,13 @@
     scaleSlide();
   });
 
-  // LinkedIn QR Code (first and last slide)
-  if (current === TOTAL_SLIDES || current === 1) {
+  // LinkedIn QR Code (only on page 2)
+  if (current === 2) {
     const linkedin = document.createElement('div');
     linkedin.className = 'linkedin-overlay';
     linkedin.innerHTML = `
       <img src="img/linkedin-qr.svg" alt="QR Code LinkedIn">
-      <a href="https://www.linkedin.com/in/luanacristinaas/" target="_blank">LinkedIn</a>
+      <a href="https://www.linkedin.com/in/luanacristinaas/" target="_blank">in/luanacristinaas</a>
     `;
     document.body.appendChild(linkedin);
   }
