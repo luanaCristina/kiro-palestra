@@ -18,9 +18,17 @@ API REST + Frontend para agendamento de consultas médicas, com suporte a múlti
 | 🌐 **App Online (Render)** | [appointment-scheduling-api.onrender.com](https://appointment-scheduling-api.onrender.com) |
 | 💻 **Repositório GitHub** | [github.com/luanaCristina/kiro-palestra](https://github.com/luanaCristina/kiro-palestra) |
 
----
+### 🖥️ Ver a Apresentação Localmente
 
-## �📋 Índice
+```bash
+git clone https://github.com/luanaCristina/kiro-palestra.git
+cd kiro-palestra/apresentation
+npx serve .
+```
+
+Acesse `http://localhost:3000/presenter.html` → clique **"▶ Apresentar em Tela Cheia"** → navegue com ← →
+
+---
 
 - [Rodando localmente](#-rodando-localmente)
 - [Acessando a versão online (Render)](#-acessando-a-versão-online-render)

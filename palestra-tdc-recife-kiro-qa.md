@@ -539,3 +539,162 @@ QA: "Kiro, valida o card SDC-8 com testes automatizados
 
 *Apresentação criada para o TDC Recife 2026 — Trilha QA & Desenvolvimento*
 *"E se o QA pudesse ler o Jira, o Confluence e o código ao mesmo tempo? Com Kiro, pode."*
+
+
+---
+
+## 12. 🆚 Comparativo Detalhado: Kiro vs Cline vs Cursor
+
+### Cline (extensão VS Code open-source)
+
+O **Cline** é uma extensão gratuita para VS Code que funciona como agente de codificação. Usa modelo BYO (Bring Your Own Key).
+
+| Aspecto | **Kiro** | **Cline** | **Cursor** |
+|---------|----------|-----------|-----------|
+| **Tipo** | IDE standalone (Code OSS) | Extensão VS Code | IDE standalone (fork VS Code) |
+| **Preço da ferramenta** | Free: 50 créditos, Pro: $20/mês | Grátis (open-source) | Free: limitado, Pro: $20/mês, Pro+: $60/mês |
+| **Modelo de IA** | Claude (incluído no preço) | BYO key (Claude, GPT, etc.) | Multi-modelo (incluído no preço) |
+| **Custo real mensal** | $20 (tudo incluído) | $0 + API costs (~$15-40/mês em uso pesado) | $20-60 (tudo incluído) |
+| **MCP nativo** | ✅ Interface visual + config JSON | ✅ Suporta MCP tools | ✅ Suporta MCP (v3.3+) |
+| **Jira integrado** | ✅ Nativo (cria/edita cards) | ✅ Via MCP server externo | ✅ Via MCP + Jira nativo (v3.3) |
+| **Confluence** | ✅ Nativo (cria/edita páginas) | ✅ Via MCP server externo | ⚠️ Via MCP (precisa configurar) |
+| **GitHub** | ✅ Nativo (push, PR, issues) | ✅ Via terminal/MCP | ✅ Nativo |
+| **Specs (requisitos→design→tasks)** | ✅ Nativo e guiado | ❌ | ❌ |
+| **Steering (contexto persistente)** | ✅ .kiro/steering/ | ❌ (usa .clinerules) | ⚠️ .cursorrules |
+| **Hooks (automações)** | ✅ Event-driven | ❌ | ❌ |
+| **Pode usar Claude gratuito?** | ✅ Free tier inclui Claude Sonnet 4.5 | ❌ Precisa de API key paga | ❌ Incluído no plano |
+| **Roda modelos locais** | ❌ | ✅ (Ollama, LM Studio) | ✅ (limitado) |
+
+### Tokens vs Créditos — Entendendo os custos
+
+| Conceito | Definição | Equivalência aproximada |
+|----------|-----------|------------------------|
+| **Token** (API) | Unidade de texto (~4 caracteres em inglês) | 1000 tokens ≈ 750 palavras |
+| **Crédito Kiro** | 1 interação (pergunta + resposta + execução) | 1 crédito ≈ 2.000-10.000 tokens consumidos |
+| **Request Cursor** | 1 interação com o modelo | Similar a 1 crédito Kiro |
+
+**Custo por token (API direta):**
+- Claude Sonnet 4: ~$3/1M input tokens, ~$15/1M output tokens
+- GPT-4o: ~$2.50/1M input, ~$10/1M output
+- Uma sessão de coding: ~50.000-200.000 tokens
+
+**Custo em créditos (Kiro):**
+- 1 pergunta simples: ~1 crédito
+- 1 spec completa (requirements→design→tasks): ~3-5 créditos
+- Run all tasks (62 tasks): ~15-25 créditos
+- Free tier (50 créditos): ~1-2 semanas de uso moderado
+
+### Vantagens e Desvantagens
+
+| Ferramenta | ✅ Vantagens | ❌ Desvantagens |
+|-----------|-------------|----------------|
+| **Kiro** | Spec-driven, MCP nativo, steering, hooks, tudo integrado | 50 créditos free é pouco, menos flexível em modelo |
+| **Cline** | Grátis, qualquer modelo, roda local, open-source | Sem spec/hooks/steering, precisa configurar tudo manual |
+| **Cursor** | Multi-modelo, Jira nativo (v3.3), autocomplete forte | Caro ($60 Pro+), .cursorrules limitado vs steering |
+
+---
+
+## 13. 🧑‍💻 Hands-On por Perfil
+
+### Hands-On para QA (15 min)
+
+**Cenário:** "Valide o card SDC-8 com testes automatizados"
+
+```
+1. "Kiro, busca o card SDC-8 no Jira e me mostra os critérios de aceite"
+2. "Mostra o código que implementa a regra de cancelamento"
+3. "Cria testes unitários que validem todos os critérios do card"
+4. "Roda os testes e me mostra os resultados"
+5. "Cria uma página no Confluence documentando os cenários testados"
+6. "Envia os resultados ao QMetry associando ao card SDC-8"
+```
+
+**O que demonstra:** Leitura de Jira + geração de testes + rastreabilidade completa
+
+### Hands-On para Dev (15 min)
+
+**Cenário:** "Implementa a feature do card SDC-17 (Google Maps)"
+
+```
+1. "Kiro, cria uma spec para a feature google-maps-clinic-location"
+2. (Kiro gera requirements.md → design.md → tasks.md)
+3. "Roda todas as tasks"
+4. (Kiro implementa migração, service, routes, frontend, testes)
+5. "Faz push para uma branch feat/google-maps e cria um PR"
+6. "Cria um card no Jira e move para In Progress"
+```
+
+**O que demonstra:** Spec-driven development + implementação completa + GitHub + Jira
+
+### Hands-On para BA/PO (10 min)
+
+**Cenário:** "Preciso documentar os requisitos do novo módulo de feriados"
+
+```
+1. "Kiro, me explica como funciona o módulo de feriados nesse projeto"
+2. "Cria uma página no Confluence com a documentação funcional desse módulo"
+3. "Quais são os estados brasileiros suportados e os feriados de cada um?"
+4. "Cria um card no Jira para adicionar os feriados que faltam"
+5. "Gera critérios de aceite no formato Given-When-Then para esse card"
+```
+
+**O que demonstra:** Entendimento de código sem programar + doc no Confluence + Jira
+
+---
+
+## 14. 🚀 Hands-On: Criar Projeto do Zero (TDC/Rec'n'Play)
+
+### Objetivo
+Criar um projeto completo ao vivo no evento, diferente do que foi apresentado anteriormente.
+
+### Ideia para o Rec'n'Play
+**Sistema de avaliação de palestras** (meta — o público avalia as palestras do próprio evento!)
+
+### Prompt inicial para o Kiro
+
+```
+Kiro, cria um projeto Node.js/TypeScript para um sistema de avaliação
+de palestras de eventos. As funcionalidades são:
+
+1. Cadastro de palestras (título, palestrante, horário, sala)
+2. Avaliação por participantes (nota 1-5, comentário opcional)
+3. Ranking das palestras mais bem avaliadas
+4. API REST com Express + PostgreSQL
+
+Cria a spec completa: requirements, design e tasks.
+Depois implementa tudo e gera os testes.
+```
+
+### O que considerar no prompt para melhores resultados
+
+| Dica | Por quê |
+|------|---------|
+| Especificar a stack | Evita que o Kiro escolha algo diferente |
+| Descrever as entidades | Kiro gera melhor com domínio claro |
+| Mencionar o padrão de teste | "gera testes" no prompt ativa property-based |
+| Pedir spec primeiro | Dá controle antes da implementação |
+| Usar "cria" não "poderia" | Linguagem direta = ação imediata |
+
+### Diferenças planejadas para o Rec'n'Play vs Esquenta TDC
+
+| Esquenta TDC (apresentado) | Rec'n'Play (novo) |
+|----------------------------|-------------------|
+| Projeto pré-pronto (agendamento médico) | Projeto criado DO ZERO ao vivo |
+| Foco em MCP + rastreabilidade | Foco em Spec-driven + velocidade |
+| 183 testes já existentes | Testes gerados ao vivo |
+| Demo com Jira/Confluence já populados | Board vazio → populado ao vivo |
+| Público assistindo resultado | Público participando (avaliando!) |
+
+### Checklist antes do evento
+
+- [ ] Conta Kiro com créditos suficientes (~30 créditos para demo completa)
+- [ ] Jira board vazio "RNP" criado
+- [ ] Confluence space limpo
+- [ ] GitHub repo vazio preparado
+- [ ] PostgreSQL rodando (ou usar SQLite para simplicidade)
+- [ ] Backup: projeto semi-pronto caso a internet falhe
+- [ ] QR Code do repo para audiência
+
+---
+
+*Atualizado em Junho 2026 — Luana Cristina | Quality Analyst @ Thoughtworks*
