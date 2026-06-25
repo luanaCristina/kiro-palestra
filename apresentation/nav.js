@@ -69,31 +69,85 @@
   document.body.appendChild(fsNav);
 
   // ─── Fullscreen Persistence ──────────────────────────────────────────
-  // When navigating between slides, remember fullscreen state and re-enter
+  // Browsers block requestFullscreen() without user gesture on new page loads.
+  // Solution: show a transparent overlay that captures the first click/keypress
+  // and uses that gesture to re-enter fullscreen seamlessly.
   const FS_KEY = 'slide-fullscreen';
 
   function navigateTo(url) {
-    if (document.fullscreenElement) {
-      // Remember we were in fullscreen before navigating
+    if (document.fullscreenElement || localStorage.getItem(FS_KEY) === 'true') {
       localStorage.setItem(FS_KEY, 'true');
     }
     window.location.href = url;
   }
 
-  // On page load: if we were in fullscreen before navigation, re-enter
+  // Restore fullscreen: show overlay that captures first interaction
   function restoreFullscreen() {
-    if (localStorage.getItem(FS_KEY) === 'true') {
-      // Small delay to ensure page is fully loaded
-      setTimeout(() => {
+    if (localStorage.getItem(FS_KEY) !== 'true') return;
+
+    // Hide normal nav bar immediately (we're in presentation mode)
+    nav.style.display = 'none';
+
+    // Create a transparent overlay that captures the first user gesture
+    const overlay = document.createElement('div');
+    overlay.id = 'fs-restore-overlay';
+    overlay.style.cssText = `
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      z-index: 99999; cursor: pointer;
+      background: rgba(0,0,0,0.95);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 16px;
+    `;
+    overlay.innerHTML = `
+      <div style="color: white; font-family: Inter, sans-serif; font-size: 18px; opacity: 0.8;">
+        Clique ou pressione qualquer tecla para continuar
+      </div>
+      <div style="color: rgba(255,255,255,0.5); font-family: Inter, sans-serif; font-size: 14px;">
+        Slide ${current} / ${TOTAL_SLIDES}
+      </div>
+    `;
+
+    function enterFS() {
+      document.documentElement.requestFullscreen().then(() => {
+        overlay.remove();
+        setTimeout(scaleSlide, 100);
+      }).catch(() => {
+        overlay.remove();
+        localStorage.removeItem(FS_KEY);
+        nav.style.display = 'flex';
+        scaleSlide();
+      });
+    }
+
+    overlay.addEventListener('click', enterFS);
+    document.addEventListener('keydown', function handler(e) {
+      if (e.key === 'Escape') {
+        localStorage.removeItem(FS_KEY);
+        overlay.remove();
+        nav.style.display = 'flex';
+        scaleSlide();
+        document.removeEventListener('keydown', handler);
+        return;
+      }
+      e.preventDefault();
+      enterFS();
+      document.removeEventListener('keydown', handler);
+    });
+
+    document.body.appendChild(overlay);
+
+    // Also try requestFullscreen directly (works in some browsers if page loaded via user navigation)
+    setTimeout(() => {
+      if (document.getElementById('fs-restore-overlay')) {
         document.documentElement.requestFullscreen().then(() => {
-          nav.style.display = 'none';
+          overlay.remove();
           setTimeout(scaleSlide, 100);
         }).catch(() => {
-          // User may have interacted, or browser blocked it
-          localStorage.removeItem(FS_KEY);
+          // Overlay stays - user needs to click/press key
         });
-      }, 100);
-    }
+      }
+    }, 200);
   }
 
   // Click handlers for fullscreen navigation areas
