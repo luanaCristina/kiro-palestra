@@ -126,3 +126,56 @@ html, body {
     font-size: 12px;
   }
 }
+
+/* Fullscreen button */
+.slide-nav .nav-fullscreen {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  font-size: 18px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.slide-nav .nav-fullscreen:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+/* Slide footer overlay (© 2026 Thoughtworks | Confidential + page number) */
+.slide-footer-overlay {
+  position: fixed;
+  bottom: 52px; /* above nav bar */
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 40px;
+  pointer-events: none;
+  z-index: 9998;
+}
+
+.slide-footer-overlay .footer-text {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
+  letter-spacing: 0.02em;
+}
+
+.slide-footer-overlay .footer-page {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* In fullscreen: footer at very bottom, no nav bar */
+:fullscreen .slide-footer-overlay,
+:-webkit-full-screen .slide-footer-overlay {
+  bottom: 12px;
+}
+
+/* Hide the original tw-footer and tw-page-num from slides (we inject our own) */
+.tw-footer, .tw-page-num {
+  display: none !important;
+}

@@ -40,11 +40,45 @@
     <span class="nav-counter">${current} / ${TOTAL_SLIDES}</span>
     <div style="display:flex; align-items:center; gap:8px;">
       ${next ? `<a href="${next}" class="nav-next" title="Próximo slide (→)">Próximo →</a>` : `<span class="nav-next nav-disabled">Próximo →</span>`}
+      <button class="nav-fullscreen" title="Tela cheia (F)" onclick="toggleFullscreen()">⛶</button>
     </div>
-    <span class="nav-hint">← → para navegar | Home para início</span>
+    <span class="nav-hint">← → navegar | F fullscreen | Home início</span>
   `;
 
   document.body.appendChild(nav);
+
+  // Slide footer (© 2026 Thoughtworks | Confidential + page number)
+  const footer = document.createElement('div');
+  footer.className = 'slide-footer-overlay';
+  footer.innerHTML = `
+    <span class="footer-text">© 2026 Thoughtworks &nbsp;|&nbsp; Confidential</span>
+    <span class="footer-page">${String(current).padStart(2, '0')}</span>
+  `;
+  document.body.appendChild(footer);
+
+  // Fullscreen toggle
+  window.toggleFullscreen = function() {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().then(() => {
+        nav.style.display = 'none';
+        setTimeout(scaleSlide, 100);
+      }).catch(() => {});
+    } else {
+      document.exitFullscreen().then(() => {
+        nav.style.display = 'flex';
+        setTimeout(scaleSlide, 100);
+      });
+    }
+  };
+
+  document.addEventListener('fullscreenchange', function() {
+    if (document.fullscreenElement) {
+      nav.style.display = 'none';
+    } else {
+      nav.style.display = 'flex';
+    }
+    setTimeout(scaleSlide, 150);
+  });
 
   // Keyboard navigation
   document.addEventListener('keydown', function(e) {
@@ -60,6 +94,10 @@
       e.preventDefault();
       window.location.href = 'index.html';
     }
+    if (e.key === 'f' || e.key === 'F') {
+      e.preventDefault();
+      window.toggleFullscreen();
+    }
   });
 
   // Responsive scaling
@@ -70,7 +108,9 @@
     const slideW = 1920;
     const slideH = 1080;
     const windowW = window.innerWidth;
-    const windowH = window.innerHeight - 48; // 48px for nav bar
+    const isFullscreen = !!document.fullscreenElement;
+    const navHeight = isFullscreen ? 0 : 48;
+    const windowH = window.innerHeight - navHeight;
 
     const scaleX = windowW / slideW;
     const scaleY = windowH / slideH;
@@ -79,10 +119,13 @@
     container.style.transform = `scale(${scale})`;
     container.style.transformOrigin = 'top left';
 
-    // Center horizontally
+    // Center horizontally and vertically
     const scaledW = slideW * scale;
+    const scaledH = slideH * scale;
     const offsetX = Math.max(0, (windowW - scaledW) / 2);
+    const offsetY = Math.max(0, (windowH - scaledH) / 2);
     container.style.marginLeft = `${offsetX}px`;
+    container.style.marginTop = `${offsetY}px`;
   }
 
   scaleSlide();
