@@ -69,85 +69,122 @@
   document.body.appendChild(fsNav);
 
   // ─── Fullscreen Persistence ──────────────────────────────────────────
-  // Browsers block requestFullscreen() without user gesture on new page loads.
-  // Solution: show a transparent overlay that captures the first click/keypress
-  // and uses that gesture to re-enter fullscreen seamlessly.
+  // Instead of navigating to a new page (which exits fullscreen),
+  // we fetch the next slide's content and swap it in-place.
+  // This keeps fullscreen active because we never leave the page.
   const FS_KEY = 'slide-fullscreen';
+  let isPresenting = false;
 
   function navigateTo(url) {
-    if (document.fullscreenElement || localStorage.getItem(FS_KEY) === 'true') {
-      localStorage.setItem(FS_KEY, 'true');
+    if (document.fullscreenElement || isPresenting) {
+      // In presentation mode: load next slide content without page navigation
+      fetchAndSwapSlide(url);
+    } else {
+      // Normal mode: regular navigation
+      window.location.href = url;
     }
-    window.location.href = url;
   }
 
-  // Restore fullscreen: show overlay that captures first interaction
-  function restoreFullscreen() {
-    if (localStorage.getItem(FS_KEY) !== 'true') return;
-
-    // Hide normal nav bar immediately (we're in presentation mode)
-    nav.style.display = 'none';
-
-    // Create a transparent overlay that captures the first user gesture
-    const overlay = document.createElement('div');
-    overlay.id = 'fs-restore-overlay';
-    overlay.style.cssText = `
-      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-      z-index: 99999; cursor: pointer;
-      background: rgba(0,0,0,0.95);
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      gap: 16px;
-    `;
-    overlay.innerHTML = `
-      <div style="color: white; font-family: Inter, sans-serif; font-size: 18px; opacity: 0.8;">
-        Clique ou pressione qualquer tecla para continuar
-      </div>
-      <div style="color: rgba(255,255,255,0.5); font-family: Inter, sans-serif; font-size: 14px;">
-        Slide ${current} / ${TOTAL_SLIDES}
-      </div>
-    `;
-
-    function enterFS() {
-      document.documentElement.requestFullscreen().then(() => {
-        overlay.remove();
-        setTimeout(scaleSlide, 100);
-      }).catch(() => {
-        overlay.remove();
-        localStorage.removeItem(FS_KEY);
-        nav.style.display = 'flex';
-        scaleSlide();
-      });
-    }
-
-    overlay.addEventListener('click', enterFS);
-    document.addEventListener('keydown', function handler(e) {
-      if (e.key === 'Escape') {
-        localStorage.removeItem(FS_KEY);
-        overlay.remove();
-        nav.style.display = 'flex';
-        scaleSlide();
-        document.removeEventListener('keydown', handler);
+  // Fetch another slide's HTML and swap the .slide-container content
+  async function fetchAndSwapSlide(url) {
+    try {
+      const response = await fetch(url);
+      const html = await response.text();
+      
+      // Parse the new page's HTML
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, 'text/html');
+      const newContainer = doc.querySelector('.slide-container');
+      const newStyles = doc.querySelectorAll('style');
+      
+      if (!newContainer) {
+        // Fallback: just navigate normally
+        window.location.href = url;
         return;
       }
-      e.preventDefault();
-      enterFS();
-      document.removeEventListener('keydown', handler);
-    });
 
-    document.body.appendChild(overlay);
+      // Remove old inline styles from head (keep nav.css and chrome.css)
+      document.querySelectorAll('head style').forEach(s => s.remove());
+      
+      // Add new page's styles
+      newStyles.forEach(style => {
+        document.head.appendChild(style.cloneNode(true));
+      });
 
-    // Also try requestFullscreen directly (works in some browsers if page loaded via user navigation)
-    setTimeout(() => {
-      if (document.getElementById('fs-restore-overlay')) {
-        document.documentElement.requestFullscreen().then(() => {
-          overlay.remove();
-          setTimeout(scaleSlide, 100);
-        }).catch(() => {
-          // Overlay stays - user needs to click/press key
-        });
+      // Swap the slide container
+      const currentContainer = document.querySelector('.slide-container');
+      if (currentContainer) {
+        currentContainer.replaceWith(newContainer.cloneNode(true));
       }
-    }, 200);
+
+      // Update URL without reload (so back button works)
+      history.pushState({ slide: url }, '', url);
+
+      // Recalculate current slide number and update nav
+      const newCurrent = getSlideFromUrl(url);
+      updateNavState(newCurrent);
+
+      // Rescale
+      setTimeout(scaleSlide, 50);
+    } catch (e) {
+      // If fetch fails, fall back to normal navigation
+      window.location.href = url;
+    }
+  }
+
+  function getSlideFromUrl(url) {
+    const filename = url.split('/').pop();
+    if (filename === 'index.html' || filename === '') return 1;
+    const match = filename.match(/page(\d+)\.html?/);
+    return match ? parseInt(match[1], 10) : 1;
+  }
+
+  function updateNavState(slideNum) {
+    const newPrev = slideNum > 1 ? getSlideUrl(slideNum - 1) : null;
+    const newNext = slideNum < TOTAL_SLIDES ? getSlideUrl(slideNum + 1) : null;
+
+    // Update counter
+    const counter = nav.querySelector('.nav-counter');
+    if (counter) counter.textContent = `${slideNum} / ${TOTAL_SLIDES}`;
+
+    // Update footer page number
+    const pageNum = footer.querySelector('.footer-page');
+    if (pageNum) pageNum.textContent = String(slideNum).padStart(2, '0');
+
+    // Update keyboard handlers
+    document.onkeydown = function(e) {
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+        e.preventDefault();
+        if (newNext) navigateTo(newNext);
+      }
+      if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+        e.preventDefault();
+        if (newPrev) navigateTo(newPrev);
+      }
+      if (e.key === 'Home') {
+        e.preventDefault();
+        navigateTo('index.html');
+      }
+      if (e.key === 'f' || e.key === 'F') {
+        e.preventDefault();
+        window.toggleFullscreen();
+      }
+      if (e.key === 'Escape') {
+        isPresenting = false;
+        localStorage.removeItem(FS_KEY);
+      }
+    };
+  }
+
+  // Handle browser back/forward
+  window.addEventListener('popstate', function(e) {
+    if (e.state && e.state.slide) {
+      fetchAndSwapSlide(e.state.slide);
+    }
+  });
+
+  function restoreFullscreen() {
+    // Not needed with SPA approach - fullscreen never breaks
   }
 
   // Click handlers for fullscreen navigation areas
@@ -161,12 +198,14 @@
   // Fullscreen toggle
   window.toggleFullscreen = function() {
     if (!document.fullscreenElement) {
+      isPresenting = true;
       localStorage.setItem(FS_KEY, 'true');
       document.documentElement.requestFullscreen().then(() => {
         nav.style.display = 'none';
         setTimeout(scaleSlide, 100);
       }).catch(() => {});
     } else {
+      isPresenting = false;
       localStorage.removeItem(FS_KEY);
       document.exitFullscreen().then(() => {
         nav.style.display = 'flex';
@@ -178,9 +217,10 @@
   document.addEventListener('fullscreenchange', function() {
     if (document.fullscreenElement) {
       nav.style.display = 'none';
-      localStorage.setItem(FS_KEY, 'true');
+      isPresenting = true;
     } else {
       nav.style.display = 'flex';
+      isPresenting = false;
       localStorage.removeItem(FS_KEY);
     }
     setTimeout(scaleSlide, 150);
