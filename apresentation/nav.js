@@ -34,16 +34,19 @@
   nav.className = 'slide-nav';
   nav.innerHTML = `
     <div style="display:flex; align-items:center; gap:8px;">
-      ${current > 1 ? `<a href="index.html" class="nav-home" title="Ir para o início (Home)">🏠 Início</a>` : ''}
-      ${prev ? `<a href="${prev}" class="nav-prev" title="Slide anterior (←)">← Voltar</a>` : `<span class="nav-prev nav-disabled">← Voltar</span>`}
+      ${current > 1 ? `<button class="nav-home" title="Ir para o início (Home)" onclick="event.preventDefault(); navigateSlide('index.html')">🏠 Início</button>` : ''}
+      ${prev ? `<button class="nav-prev" title="Slide anterior (←)" onclick="event.preventDefault(); navigateSlide('${prev}')">← Voltar</button>` : `<span class="nav-prev nav-disabled">← Voltar</span>`}
     </div>
     <span class="nav-counter">${current} / ${TOTAL_SLIDES}</span>
     <div style="display:flex; align-items:center; gap:8px;">
-      ${next ? `<a href="${next}" class="nav-next" title="Próximo slide (→)">Próximo →</a>` : `<span class="nav-next nav-disabled">Próximo →</span>`}
+      ${next ? `<button class="nav-next" title="Próximo slide (→)" onclick="event.preventDefault(); navigateSlide('${next}')">Próximo →</button>` : `<span class="nav-next nav-disabled">Próximo →</span>`}
       <button class="nav-fullscreen" title="Tela cheia (F)" onclick="toggleFullscreen()">⛶</button>
     </div>
-    <span class="nav-hint">← → navegar | F fullscreen | Home início</span>
+    <span class="nav-hint">← → navegar | F fullscreen | Esc sair</span>
   `;
+
+  // Expose navigateSlide globally for button onclick
+  window.navigateSlide = function(url) { navigateTo(url); };
 
   document.body.appendChild(nav);
 
@@ -65,22 +68,52 @@
   `;
   document.body.appendChild(fsNav);
 
+  // ─── Fullscreen Persistence ──────────────────────────────────────────
+  // When navigating between slides, remember fullscreen state and re-enter
+  const FS_KEY = 'slide-fullscreen';
+
+  function navigateTo(url) {
+    if (document.fullscreenElement) {
+      // Remember we were in fullscreen before navigating
+      localStorage.setItem(FS_KEY, 'true');
+    }
+    window.location.href = url;
+  }
+
+  // On page load: if we were in fullscreen before navigation, re-enter
+  function restoreFullscreen() {
+    if (localStorage.getItem(FS_KEY) === 'true') {
+      // Small delay to ensure page is fully loaded
+      setTimeout(() => {
+        document.documentElement.requestFullscreen().then(() => {
+          nav.style.display = 'none';
+          setTimeout(scaleSlide, 100);
+        }).catch(() => {
+          // User may have interacted, or browser blocked it
+          localStorage.removeItem(FS_KEY);
+        });
+      }, 100);
+    }
+  }
+
   // Click handlers for fullscreen navigation areas
   fsNav.querySelector('.fs-nav-left').addEventListener('click', function() {
-    if (prev) window.location.href = prev;
+    if (prev) navigateTo(prev);
   });
   fsNav.querySelector('.fs-nav-right').addEventListener('click', function() {
-    if (next) window.location.href = next;
+    if (next) navigateTo(next);
   });
 
   // Fullscreen toggle
   window.toggleFullscreen = function() {
     if (!document.fullscreenElement) {
+      localStorage.setItem(FS_KEY, 'true');
       document.documentElement.requestFullscreen().then(() => {
         nav.style.display = 'none';
         setTimeout(scaleSlide, 100);
       }).catch(() => {});
     } else {
+      localStorage.removeItem(FS_KEY);
       document.exitFullscreen().then(() => {
         nav.style.display = 'flex';
         setTimeout(scaleSlide, 100);
@@ -91,8 +124,10 @@
   document.addEventListener('fullscreenchange', function() {
     if (document.fullscreenElement) {
       nav.style.display = 'none';
+      localStorage.setItem(FS_KEY, 'true');
     } else {
       nav.style.display = 'flex';
+      localStorage.removeItem(FS_KEY);
     }
     setTimeout(scaleSlide, 150);
   });
@@ -101,19 +136,22 @@
   document.addEventListener('keydown', function(e) {
     if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
       e.preventDefault();
-      if (next) window.location.href = next;
+      if (next) navigateTo(next);
     }
     if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
       e.preventDefault();
-      if (prev) window.location.href = prev;
+      if (prev) navigateTo(prev);
     }
     if (e.key === 'Home') {
       e.preventDefault();
-      window.location.href = 'index.html';
+      navigateTo('index.html');
     }
     if (e.key === 'f' || e.key === 'F') {
       e.preventDefault();
       window.toggleFullscreen();
+    }
+    if (e.key === 'Escape') {
+      localStorage.removeItem(FS_KEY);
     }
   });
 
@@ -147,6 +185,9 @@
 
   scaleSlide();
   window.addEventListener('resize', scaleSlide);
+
+  // Restore fullscreen if we were presenting before navigation
+  restoreFullscreen();
 
   // LinkedIn QR Code (shown on last slide only)
   if (current === TOTAL_SLIDES || current === 1) {
