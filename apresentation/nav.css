@@ -179,3 +179,93 @@ html, body {
 .tw-footer, .tw-page-num {
   display: none !important;
 }
+
+/* Fullscreen navigation: invisible click areas on left/right edges */
+.fullscreen-nav-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9990;
+  pointer-events: none;
+}
+
+:fullscreen .fullscreen-nav-overlay,
+:-webkit-full-screen .fullscreen-nav-overlay {
+  display: flex;
+}
+
+.fs-nav-left,
+.fs-nav-right {
+  position: absolute;
+  top: 0;
+  width: 15%;
+  height: 100%;
+  cursor: pointer;
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.fs-nav-left {
+  left: 0;
+}
+
+.fs-nav-right {
+  right: 0;
+}
+
+.fs-nav-left:hover,
+.fs-nav-right:hover {
+  opacity: 1;
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.fs-nav-left::after {
+  content: '‹';
+  font-size: 60px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.fs-nav-right::after {
+  content: '›';
+  font-size: 60px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* LinkedIn QR overlay on last slide */
+.linkedin-overlay {
+  position: fixed;
+  bottom: 60px;
+  right: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  z-index: 9995;
+}
+
+.linkedin-overlay img {
+  width: 120px;
+  height: 120px;
+  border-radius: 8px;
+  background: white;
+  padding: 4px;
+}
+
+.linkedin-overlay a {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: #F2617A;
+  text-decoration: none;
+}
+
+.linkedin-overlay a:hover {
+  text-decoration: underline;
+}

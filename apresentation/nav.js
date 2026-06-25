@@ -56,6 +56,23 @@
   `;
   document.body.appendChild(footer);
 
+  // Fullscreen navigation overlay (invisible clickable areas on left/right edges)
+  const fsNav = document.createElement('div');
+  fsNav.className = 'fullscreen-nav-overlay';
+  fsNav.innerHTML = `
+    <div class="fs-nav-left" title="← Slide anterior">${prev ? '' : ''}</div>
+    <div class="fs-nav-right" title="→ Próximo slide">${next ? '' : ''}</div>
+  `;
+  document.body.appendChild(fsNav);
+
+  // Click handlers for fullscreen navigation areas
+  fsNav.querySelector('.fs-nav-left').addEventListener('click', function() {
+    if (prev) window.location.href = prev;
+  });
+  fsNav.querySelector('.fs-nav-right').addEventListener('click', function() {
+    if (next) window.location.href = next;
+  });
+
   // Fullscreen toggle
   window.toggleFullscreen = function() {
     if (!document.fullscreenElement) {
@@ -130,6 +147,17 @@
 
   scaleSlide();
   window.addEventListener('resize', scaleSlide);
+
+  // LinkedIn QR Code (shown on last slide only)
+  if (current === TOTAL_SLIDES || current === 1) {
+    const linkedin = document.createElement('div');
+    linkedin.className = 'linkedin-overlay';
+    linkedin.innerHTML = `
+      <img src="img/linkedin-qr.svg" alt="QR Code LinkedIn Luana Cristina">
+      <a href="https://www.linkedin.com/in/luanacristinaas/" target="_blank" rel="noopener">LinkedIn</a>
+    `;
+    document.body.appendChild(linkedin);
+  }
 
   // Auto-hide nav after 3 seconds of inactivity
   let hideTimeout;
