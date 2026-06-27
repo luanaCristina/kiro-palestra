@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Apresentação — Modo Apresentador</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 100%; height: 100%; overflow: hidden; background: #000; font-family: 'Inter', system-ui, sans-serif; }
+
+  /* Slide iframe fills entire screen */
+  #slideFrame {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
+  }
+
+  /* Start screen */
+  #startScreen {
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(135deg, #003D4F 0%, #1a1a2e 100%);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 24px; z-index: 100;
+  }
+  #startScreen h1 { color: #fff; font-size: 28px; font-weight: 300; }
+  #startScreen h1 span { color: #F2617A; font-weight: 700; }
+  #startBtn {
+    padding: 16px 48px; font-size: 20px; font-weight: 700;
+    background: #F2617A; color: #fff; border: none; border-radius: 8px;
+    cursor: pointer; transition: transform 0.1s, background 0.2s;
+  }
+  #startBtn:hover { background: #e04e68; transform: scale(1.02); }
+  #startScreen p { color: rgba(255,255,255,0.5); font-size: 14px; }
+
+  /* Navigation overlay (visible on hover at bottom) */
+  #navOverlay {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    height: 60px; display: flex; align-items: center; justify-content: center; gap: 16px;
+    background: rgba(0,0,0,0.7); backdrop-filter: blur(6px);
+    opacity: 0; transition: opacity 0.3s; z-index: 50;
+  }
+  #navOverlay:hover, #navOverlay.visible { opacity: 1; }
+  #navOverlay button {
+    padding: 8px 20px; border: none; border-radius: 6px;
+    font-size: 14px; font-weight: 600; cursor: pointer; color: #fff;
+  }
+  #navOverlay .prev { background: rgba(255,255,255,0.15); }
+  #navOverlay .prev:hover { background: rgba(255,255,255,0.25); }
+  #navOverlay .next { background: #F2617A; }
+  #navOverlay .next:hover { background: #e04e68; }
+  #navOverlay .counter { color: rgba(255,255,255,0.6); font-size: 13px; min-width: 60px; text-align: center; }
+  #navOverlay .exit { background: rgba(255,255,255,0.1); font-size: 12px; }
+</style>
+</head>
+<body>
+
+<!-- Start screen with fullscreen button -->
+<div id="startScreen">
+  <h1>E se o <span>QA</span> pudesse ler o Jira, o Confluence e o código?</h1>
+  <button id="startBtn" onclick="startPresentation()">▶ Apresentar em Tela Cheia</button>
+  <p>18 slides · Navegue com ← → · Esc para sair</p>
+  <p style="margin-top:16px;"><a href="#" onclick="exportPDF()" style="color:#F2617A; font-size:16px; text-decoration:underline;">📄 Exportar como PDF (para LinkedIn)</a></p>
+</div>
+
+<!-- Iframe that holds the slides -->
+<iframe id="slideFrame" src="" style="display:none;"></iframe>
+
+<!-- Navigation overlay -->
+<div id="navOverlay">
+  <button class="prev" onclick="prevSlide()">← Voltar</button>
+  <span class="counter" id="counter">1 / 18</span>
+  <button class="next" onclick="nextSlide()">Próximo →</button>
+  <button class="exit" onclick="exitPresentation()">✕ Sair</button>
+</div>
+
+<script>
+  const TOTAL = 18;
+  let current = 1;
+  let presenting = false;
+
+  function getUrl(n) {
+    return n === 1 ? 'index.html' : `page${n}.html`;
+  }
+
+  function updateCounter() {
+    document.getElementById('counter').textContent = `${current} / ${TOTAL}`;
+  }
+
+  function loadSlide(n) {
+    if (n < 1 || n > TOTAL) return;
+    current = n;
+    document.getElementById('slideFrame').src = getUrl(n);
+    updateCounter();
+  }
+
+  function nextSlide() {
+    if (current < TOTAL) loadSlide(current + 1);
+  }
+
+  function prevSlide() {
+    if (current > 1) loadSlide(current - 1);
+  }
+
+  function startPresentation() {
+    document.documentElement.requestFullscreen().then(() => {
+      presenting = true;
+      document.getElementById('startScreen').style.display = 'none';
+      document.getElementById('slideFrame').style.display = 'block';
+      loadSlide(1);
+    }).catch(() => {
+      // Fallback: start without fullscreen
+      presenting = true;
+      document.getElementById('startScreen').style.display = 'none';
+      document.getElementById('slideFrame').style.display = 'block';
+      loadSlide(1);
+    });
+  }
+
+  function exitPresentation() {
+    if (document.fullscreenElement) {
+      document.exitFullscreen();
+    }
+    presenting = false;
+    document.getElementById('startScreen').style.display = 'flex';
+    document.getElementById('slideFrame').style.display = 'none';
+  }
+
+  // Keyboard navigation
+  document.addEventListener('keydown', function(e) {
+    if (!presenting) {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        startPresentation();
+      }
+      return;
+    }
+
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+      e.preventDefault();
+      nextSlide();
+    }
+    if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      e.preventDefault();
+      prevSlide();
+    }
+    if (e.key === 'Home') {
+      e.preventDefault();
+      loadSlide(1);
+    }
+    if (e.key === 'End') {
+      e.preventDefault();
+      loadSlide(TOTAL);
+    }
+  });
+
+  // Show nav on mouse move at bottom
+  let navTimeout;
+  document.addEventListener('mousemove', function(e) {
+    const nav = document.getElementById('navOverlay');
+    if (!presenting) return;
+    if (e.clientY > window.innerHeight - 80) {
+      nav.classList.add('visible');
+    }
+    clearTimeout(navTimeout);
+    navTimeout = setTimeout(() => nav.classList.remove('visible'), 2000);
+  });
+
+  // Handle fullscreen exit
+  document.addEventListener('fullscreenchange', function() {
+    if (!document.fullscreenElement && presenting) {
+      // User pressed Escape - exit presentation
+      exitPresentation();
+    }
+  });
+
+  // Export PDF: loads all slides and opens print dialog
+  window.exportPDF = function() {
+    const printWin = window.open('', '_blank');
+    printWin.document.write('<html><head><title>Palestra Kiro MCP - PDF</title><style>*{margin:0;padding:0}body{background:#fff}.sp{width:1920px;height:1080px;page-break-after:always;overflow:hidden;transform-origin:top left;transform:scale(0.515);margin-bottom:-520px}.sp:last-child{page-break-after:avoid}@media print{@page{size:landscape;margin:0}}</style></head><body><p style="text-align:center;padding:40px;font-family:sans-serif">Carregando 18 slides...</p></body></html>');
+
+    const urls = [];
+    for (let i = 1; i <= TOTAL; i++) urls.push(i === 1 ? 'index.html' : 'page'+i+'.html');
+
+    Promise.all(urls.map((url, idx) =>
+      fetch(url).then(r => r.text()).then(html => {
+        const doc = new DOMParser().parseFromString(html, 'text/html');
+        const container = doc.querySelector('.slide-container');
+        const styles = Array.from(doc.querySelectorAll('style')).map(s => s.outerHTML).join('');
+        return { idx, html: container ? '<div class="sp">' + styles + container.outerHTML + '</div>' : '' };
+      })
+    )).then(pages => {
+      pages.sort((a, b) => a.idx - b.idx);
+      printWin.document.body.innerHTML = pages.map(p => p.html).join('');
+      setTimeout(() => printWin.print(), 800);
+    });
+  };
+</script>
+</body>
+</html>

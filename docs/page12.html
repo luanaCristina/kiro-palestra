@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Demo — Do Jira ao Teste</title>
+<link rel="stylesheet" href="../assets/chrome.css">
+<link rel="stylesheet" href="nav.css">
+</head>
+<body>
+<div class="slide-container" data-screen-label="12 Demo Jira ao Teste" style="position:relative; width:1920px; height:1080px; overflow:hidden; background:#ECF0F3;">
+
+  <div data-object="true" data-object-type="image"
+       style="position:absolute; left:80px; top:60px; width:280px; height:42px; display:flex; align-items:center; z-index:10;">
+    <div style="width:12px; height:42px; background:#F2617A; transform: skewX(-18deg); margin-right:12px;"></div>
+    <span style="font-family:'Inter',sans-serif; font-weight:700; font-size:32px; color:#003D4F; letter-spacing:-0.02em;">thoughtworks</span>
+  </div>
+  <div data-object="true" data-object-type="shape" style="position:absolute; left:80px; top:130px; width:1760px; height:2px; background:#003D4F; opacity:0.12; z-index:1;"></div>
+
+  <div data-object="true" data-object-type="textbox" style="position:absolute; left:80px; top:160px; z-index:10;">
+    <div style="font-family:'Inter',sans-serif; font-weight:700; font-size:18px; color:#F2617A; letter-spacing:0.18em; text-transform:uppercase;">🎬 Demo ao vivo</div>
+  </div>
+
+  <div data-object="true" data-object-type="textbox" style="position:absolute; left:80px; top:200px; width:1700px; z-index:10;">
+    <div style="font-family:'Inter',sans-serif; font-weight:800; font-size:80px; color:#003D4F; line-height:1.0; letter-spacing:-0.03em;">Do Jira ao <span style="color:#F2617A;">teste automatizado</span> em minutos</div>
+  </div>
+
+  <!-- 6 steps timeline -->
+  <div data-object="true" data-object-type="textbox" style="position:absolute; left:80px; top:380px; width:1780px; z-index:10;">
+    <div style="display:flex; flex-direction:column; gap:14px; font-family:'Inter',sans-serif;">
+
+      <div style="display:flex; gap:24px; align-items:stretch;">
+        <div style="flex:0 0 80px; background:#003D4F; color:#FFFFFF; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:28px; border-radius:10px;">1</div>
+        <div style="flex:1; padding:18px 24px; background:#FFFFFF; border-radius:10px; border-left:5px solid #F2617A;">
+          <div style="font-family:'JetBrains Mono', monospace; font-weight:500; font-size:22px; color:#003D4F;">"Kiro, cria uma spec para automação de testes"</div>
+          <div style="margin-top:6px; font-size:18px; color:#6B7682;">→ Gera <code style="background:#ECF0F3; padding:2px 6px; border-radius:4px; font-size:16px;">requirements.md</code> + <code style="background:#ECF0F3; padding:2px 6px; border-radius:4px; font-size:16px;">design.md</code> + <code style="background:#ECF0F3; padding:2px 6px; border-radius:4px; font-size:16px;">tasks.md</code></div>
+        </div>
+      </div>
+
+      <div style="display:flex; gap:24px; align-items:stretch;">
+        <div style="flex:0 0 80px; background:#003D4F; color:#FFFFFF; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:28px; border-radius:10px;">2</div>
+        <div style="flex:1; padding:18px 24px; background:#FFFFFF; border-radius:10px; border-left:5px solid #F2617A;">
+          <div style="font-family:'JetBrains Mono', monospace; font-weight:500; font-size:22px; color:#003D4F;">"Kiro, executa todas as tasks"</div>
+          <div style="margin-top:6px; font-size:18px; color:#6B7682;">→ Implementa <strong style="color:#F2617A;">183 testes automatizados</strong> · 62 tasks · 4 camadas (integração, unit, property, E2E)</div>
+        </div>
+      </div>
+
+      <div style="display:flex; gap:24px; align-items:stretch;">
+        <div style="flex:0 0 80px; background:#003D4F; color:#FFFFFF; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:28px; border-radius:10px;">3</div>
+        <div style="flex:1; padding:18px 24px; background:#FFFFFF; border-radius:10px; border-left:5px solid #F2617A;">
+          <div style="font-family:'JetBrains Mono', monospace; font-weight:500; font-size:22px; color:#003D4F;">"Cria um card no Jira e coloca em Testing"</div>
+          <div style="margin-top:6px; font-size:18px; color:#6B7682;">→ Card <strong>SDC-16</strong> criado, status movido, comentário com link do branch — via MCP Atlassian</div>
+        </div>
+      </div>
+
+      <div style="display:flex; gap:24px; align-items:stretch;">
+        <div style="flex:0 0 80px; background:#F2617A; color:#FFFFFF; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:28px; border-radius:10px;">4</div>
+        <div style="flex:1; padding:18px 24px; background:#FFFFFF; border-radius:10px; border-left:5px solid #F2617A;">
+          <div style="font-family:'JetBrains Mono', monospace; font-weight:500; font-size:22px; color:#003D4F;">"Roda os testes e envia pro QMetry no card SDC-8"</div>
+          <div style="margin-top:6px; font-size:18px; color:#6B7682;">→ <code style="background:#ECF0F3; padding:2px 6px; border-radius:4px; font-size:16px;">npm run test:qmetry -- --card SDC-8</code> · <strong style="color:#5CBA7A;">182/183 pass</strong> · Test Cycle criado</div>
+        </div>
+      </div>
+
+      <div style="display:flex; gap:24px; align-items:stretch;">
+        <div style="flex:0 0 80px; background:#003D4F; color:#FFFFFF; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:28px; border-radius:10px;">5</div>
+        <div style="flex:1; padding:18px 24px; background:#FFFFFF; border-radius:10px; border-left:5px solid #F2617A;">
+          <div style="font-family:'JetBrains Mono', monospace; font-weight:500; font-size:22px; color:#003D4F;">"Cria uma página Confluence explicando os testes"</div>
+          <div style="margin-top:6px; font-size:18px; color:#6B7682;">→ Página completa com cenários, comandos, rastreabilidade — também via MCP Atlassian</div>
+        </div>
+      </div>
+
+      <div style="display:flex; gap:24px; align-items:stretch;">
+        <div style="flex:0 0 80px; background:#003D4F; color:#FFFFFF; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:28px; border-radius:10px;">6</div>
+        <div style="flex:1; padding:18px 24px; background:#FFFFFF; border-radius:10px; border-left:5px solid #F2617A;">
+          <div style="font-family:'JetBrains Mono', monospace; font-weight:500; font-size:22px; color:#003D4F;">"Faz deploy no Render"</div>
+          <div style="margin-top:6px; font-size:18px; color:#6B7682;">→ Aplicação online com dados demo · <strong>appointment-scheduling-api.onrender.com</strong></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div data-object="true" data-object-type="textbox" class="tw-footer on-light" style="z-index:10;">© 2026 Thoughtworks &nbsp;|&nbsp; Confidential</div>
+  <div data-object="true" data-object-type="textbox" class="tw-page-num on-light" style="z-index:10;">12</div>
+</div>
+<script src="nav.js"></script>
+</body>
+</html>
+

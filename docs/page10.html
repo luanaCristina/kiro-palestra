@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>MCP — Configuração</title>
+<link rel="stylesheet" href="../assets/chrome.css">
+<link rel="stylesheet" href="nav.css">
+</head>
+<body>
+<div class="slide-container" data-screen-label="10 MCP Configuração" style="position:relative; width:1920px; height:1080px; overflow:hidden; background:#ECF0F3;">
+
+  <div data-object="true" data-object-type="image"
+       style="position:absolute; left:80px; top:60px; width:280px; height:42px; display:flex; align-items:center; z-index:10;">
+    <div style="width:12px; height:42px; background:#F2617A; transform: skewX(-18deg); margin-right:12px;"></div>
+    <span style="font-family:'Inter',sans-serif; font-weight:700; font-size:32px; color:#003D4F; letter-spacing:-0.02em;">thoughtworks</span>
+  </div>
+  <div data-object="true" data-object-type="shape" style="position:absolute; left:80px; top:130px; width:1760px; height:2px; background:#003D4F; opacity:0.12; z-index:1;"></div>
+
+  <div data-object="true" data-object-type="textbox" style="position:absolute; left:80px; top:160px; z-index:10;">
+    <div style="font-family:'Inter',sans-serif; font-weight:700; font-size:18px; color:#F2617A; letter-spacing:0.22em; text-transform:uppercase;">★ MCP Deep Dive · 3 de 4</div>
+  </div>
+
+  <div data-object="true" data-object-type="textbox" style="position:absolute; left:80px; top:200px; width:1700px; z-index:10;">
+    <div style="font-family:'Inter',sans-serif; font-weight:800; font-size:80px; color:#003D4F; line-height:1.0; letter-spacing:-0.03em;">Configurando MCP — <span style="color:#F2617A;">na prática</span></div>
+  </div>
+
+  <!-- File path indicator -->
+  <div data-object="true" data-object-type="textbox" style="position:absolute; left:80px; top:340px; z-index:10;">
+    <div style="display:inline-flex; align-items:center; gap:12px; padding:10px 20px; background:#003D4F; border-radius:6px;">
+      <span style="font-size:20px;">📁</span>
+      <span style="font-family:'JetBrains Mono', monospace; font-weight:500; font-size:22px; color:#FFFFFF;">~/.kiro/settings/mcp.json</span>
+    </div>
+  </div>
+
+  <!-- Code block -->
+  <div data-object="true" data-object-type="shape" style="position:absolute; left:80px; top:410px; width:1180px; height:560px; background:#002A38; border-radius:12px; box-shadow:0 12px 32px rgba(0,61,79,0.25); z-index:1;"></div>
+
+  <!-- Window dots -->
+  <div data-object="true" data-object-type="textbox" style="position:absolute; left:110px; top:425px; z-index:10;">
+    <div style="display:flex; gap:8px;"><div style="width:12px; height:12px; border-radius:50%; background:#F2617A;"></div><div style="width:12px; height:12px; border-radius:50%; background:#FFC857;"></div><div style="width:12px; height:12px; border-radius:50%; background:#5CBA7A;"></div></div>
+  </div>
+
+  <div data-object="true" data-object-type="textbox" style="position:absolute; left:110px; top:460px; width:1120px; z-index:10;">
+<pre style="margin:0; font-family:'JetBrains Mono', monospace; font-weight:400; font-size:17px; line-height:1.35; color:#E8EEF1; white-space:pre;"><span style="color:#9DB3BD;">{</span>
+  <span style="color:#F2617A;">"mcpServers"</span>: <span style="color:#9DB3BD;">{</span>
+
+    <span style="color:#F2617A;">"github"</span>: <span style="color:#9DB3BD;">{</span>
+      <span style="color:#88C5DC;">"command"</span>: <span style="color:#A8D8B9;">"npx"</span>,
+      <span style="color:#88C5DC;">"args"</span>: [<span style="color:#A8D8B9;">"-y"</span>, <span style="color:#A8D8B9;">"@modelcontextprotocol/server-github"</span>],
+      <span style="color:#88C5DC;">"env"</span>: <span style="color:#9DB3BD;">{</span> <span style="color:#88C5DC;">"GITHUB_PERSONAL_ACCESS_TOKEN"</span>: <span style="color:#A8D8B9;">"${TOKEN}"</span> <span style="color:#9DB3BD;">}</span>
+    <span style="color:#9DB3BD;">}</span>,
+
+    <span style="color:#F2617A;">"atlassian-cloud"</span>: <span style="color:#9DB3BD;">{</span>
+      <span style="color:#88C5DC;">"url"</span>: <span style="color:#A8D8B9;">"https://mcp.atlassian.com/v1/mcp"</span>,
+      <span style="color:#88C5DC;">"env"</span>: <span style="color:#9DB3BD;">{</span>
+        <span style="color:#88C5DC;">"ATLASSIAN_EMAIL"</span>: <span style="color:#A8D8B9;">"seu@email.com"</span>,
+        <span style="color:#88C5DC;">"ATLASSIAN_API_TOKEN"</span>: <span style="color:#A8D8B9;">"${ATLASSIAN_TOKEN}"</span>
+      <span style="color:#9DB3BD;">}</span>
+    <span style="color:#9DB3BD;">}</span>,
+
+    <span style="color:#F2617A;">"smartbear"</span>: <span style="color:#9DB3BD;">{</span>
+      <span style="color:#88C5DC;">"command"</span>: <span style="color:#A8D8B9;">"npx"</span>,
+      <span style="color:#88C5DC;">"args"</span>: [<span style="color:#A8D8B9;">"-y"</span>, <span style="color:#A8D8B9;">"@smartbear/mcp@latest"</span>],
+      <span style="color:#88C5DC;">"env"</span>: <span style="color:#9DB3BD;">{</span> <span style="color:#88C5DC;">"QMETRY_API_KEY"</span>: <span style="color:#A8D8B9;">"${QMETRY_KEY}"</span> <span style="color:#9DB3BD;">}</span>
+    <span style="color:#9DB3BD;">}</span>
+  <span style="color:#9DB3BD;">}</span>
+<span style="color:#9DB3BD;">}</span></pre>
+  </div>
+
+  <!-- Right column: 3 keys to good MCP config -->
+  <div data-object="true" data-object-type="textbox" style="position:absolute; left:1300px; top:410px; width:540px; z-index:10;">
+    <div style="font-family:'Inter',sans-serif; font-weight:700; font-size:18px; color:#F2617A; letter-spacing:0.18em; text-transform:uppercase; margin-bottom:18px;">3 chaves de uma boa config</div>
+
+    <div style="margin-bottom:24px;">
+      <div style="display:flex; align-items:center; gap:14px; margin-bottom:10px;"><div style="width:36px; height:36px; background:#003D4F; color:#FFFFFF; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:18px; border-radius:50%;">1</div><div style="font-family:'Inter',sans-serif; font-weight:800; font-size:28px; color:#003D4F;">command + args</div></div>
+      <div style="padding-left:50px; font-family:'Inter',sans-serif; font-weight:400; font-size:20px; color:#1A1A1A; line-height:1.4;">Kiro inicia o server como processo local (<code style="background:#FFFFFF; padding:2px 6px; border-radius:4px;">npx</code>, <code style="background:#FFFFFF; padding:2px 6px; border-radius:4px;">docker</code>, ou binário).</div>
+    </div>
+
+    <div style="margin-bottom:24px;">
+      <div style="display:flex; align-items:center; gap:14px; margin-bottom:10px;"><div style="width:36px; height:36px; background:#003D4F; color:#FFFFFF; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:18px; border-radius:50%;">2</div><div style="font-family:'Inter',sans-serif; font-weight:800; font-size:28px; color:#003D4F;">env (secrets)</div></div>
+      <div style="padding-left:50px; font-family:'Inter',sans-serif; font-weight:400; font-size:20px; color:#1A1A1A; line-height:1.4;">Sempre via <code style="background:#FFFFFF; padding:2px 6px; border-radius:4px;">${VAR}</code> — <strong style="color:#F2617A;">nunca</strong> tokens em texto puro.</div>
+    </div>
+
+    <div>
+      <div style="display:flex; align-items:center; gap:14px; margin-bottom:10px;"><div style="width:36px; height:36px; background:#F2617A; color:#FFFFFF; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:18px; border-radius:50%;">3</div><div style="font-family:'Inter',sans-serif; font-weight:800; font-size:28px; color:#003D4F;">Escopo mínimo</div></div>
+      <div style="padding-left:50px; font-family:'Inter',sans-serif; font-weight:400; font-size:20px; color:#1A1A1A; line-height:1.4;">Token Jira só com permissão de leitura/escrita nos projetos do dia.</div>
+    </div>
+
+    <!-- Pro tip -->
+    <div style="margin-top:30px; padding:20px; background:#003D4F; border-radius:10px;">
+      <div style="font-family:'Inter',sans-serif; font-weight:700; font-size:16px; color:#F2617A; letter-spacing:0.15em; text-transform:uppercase; margin-bottom:8px;">💡 Pro tip TW</div>
+      <div style="font-family:'Inter',sans-serif; font-weight:500; font-size:20px; color:#FFFFFF; line-height:1.4;">Comece com 1 server. Adicione outros conforme precisar — não plugue tudo de uma vez.</div>
+    </div>
+  </div>
+
+  <div data-object="true" data-object-type="textbox" class="tw-footer on-light" style="z-index:10;">© 2026 Thoughtworks &nbsp;|&nbsp; Confidential</div>
+  <div data-object="true" data-object-type="textbox" class="tw-page-num on-light" style="z-index:10;">10</div>
+</div>
+<script src="nav.js"></script>
+</body>
+</html>
+
