@@ -176,7 +176,36 @@
   // Export PDF: loads all slides and opens print dialog
   window.exportPDF = function() {
     const printWin = window.open('', '_blank');
-    printWin.document.write('<html><head><title>Palestra Kiro MCP - PDF</title><style>*{margin:0;padding:0}body{background:#fff}.sp{width:1920px;height:1080px;page-break-after:always;overflow:hidden;transform-origin:top left;transform:scale(0.515);margin-bottom:-520px}.sp:last-child{page-break-after:avoid}@media print{@page{size:landscape;margin:0}}</style></head><body><p style="text-align:center;padding:40px;font-family:sans-serif">Carregando 18 slides...</p></body></html>');
+    printWin.document.write(`<!DOCTYPE html><html><head><title>Palestra Kiro MCP - PDF</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 100%; height: 100%; }
+  .sp {
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+    overflow: hidden;
+    page-break-after: always;
+    page-break-inside: avoid;
+  }
+  .sp .slide-container {
+    transform-origin: top left;
+    position: absolute;
+    top: 0; left: 0;
+  }
+  .sp:last-child { page-break-after: avoid; }
+  @media print {
+    @page { size: 1920px 1080px; margin: 0; }
+    .sp { width: 1920px; height: 1080px; }
+    .sp .slide-container { transform: none !important; }
+  }
+  @media screen {
+    .sp .slide-container {
+      transform: scale(calc(100vw / 1920));
+    }
+  }
+</style>
+</head><body><p style="text-align:center;padding:40px;font-family:sans-serif">Carregando 18 slides...</p></body></html>`);
 
     const urls = [];
     for (let i = 1; i <= TOTAL; i++) urls.push(i === 1 ? 'index.html' : 'page'+i+'.html');
@@ -191,7 +220,10 @@
     )).then(pages => {
       pages.sort((a, b) => a.idx - b.idx);
       printWin.document.body.innerHTML = pages.map(p => p.html).join('');
-      setTimeout(() => printWin.print(), 800);
+      setTimeout(() => {
+        printWin.document.title = 'Palestra-Kiro-MCP-LinkedIn';
+        printWin.print();
+      }, 1000);
     });
   };
 </script>
