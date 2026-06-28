@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light" style=""><head>
+<meta charset="utf-8">
+<title>MCP: Jira + Confluence — Oficina Kiro + MCP</title>
+<link rel="stylesheet" href="../assets/chrome.css">
+<link rel="stylesheet" href="nav.css">
+</head>
+<body style="user-select: none;">
+<div class="slide-container" data-screen-label="06 MCP Atlassian" style="position:relative; width:1920px; height:1080px; overflow:hidden; background:#ECF0F3;">
+
+  <!-- thoughtworks logo (top-left) -->
+  <div data-object="true" data-object-type="image" style="position:absolute; left:80px; top:60px; width:280px; height:42px; display:flex; align-items:center; z-index:10;">
+    <div style="width:12px; height:42px; background:#F2617A; transform: skewX(-18deg); margin-right:12px;"></div>
+    <span style="font-family:'Inter',sans-serif; font-weight:700; font-size:32px; color:#003D4F; letter-spacing:-0.02em;">thoughtworks</span>
+  </div>
+
+  <!-- divider rule -->
+  <div data-object="true" data-object-type="shape" style="position:absolute; left:80px; top:130px; width:1760px; height:2px; background:#003D4F; opacity:0.12; z-index:1;"></div>
+
+  <!-- Section label -->
+  <div data-object="true" data-object-type="textbox" style="position:absolute; left:80px; top:160px; z-index:10;">
+    <div style="font-family:'Inter',sans-serif; font-weight:700; font-size:18px; color:#F2617A; letter-spacing:0.18em; text-transform:uppercase;">Bloco 2 · MCP</div>
+  </div>
+
+  <!-- Title -->
+  <div data-object="true" data-object-type="textbox" style="position:absolute; left:80px; top:210px; width:1400px; z-index:10;">
+    <div style="font-family:'Inter',sans-serif; font-weight:800; font-size:56px; color:#003D4F; line-height:1.1; letter-spacing:-0.025em;">Configurar MCP: <span style="color:#F2617A;">Jira + Confluence</span></div>
+  </div>
+
+  <!-- Code block -->
+  <div data-object="true" data-object-type="textbox" style="position:absolute; left:80px; top:330px; width:1600px; z-index:10;">
+    <div style="background:#003D4F; border-radius:12px; padding:36px 48px;">
+      <div style="font-family:'Inter',sans-serif; font-weight:600; font-size:16px; color:rgba(255,255,255,0.5); margin-bottom:16px; letter-spacing:0.05em;">.kiro/settings/mcp.json</div>
+      <pre style="font-family:'JetBrains Mono','Fira Code',monospace; font-size:20px; color:rgba(255,255,255,0.92); line-height:1.65; margin:0; white-space:pre-wrap;">{
+  <span style="color:#F2617A;">"mcpServers"</span>: {
+    "github": { ... },
+    <span style="color:#F2617A;">"atlassian-cloud"</span>: {
+      "url": "https://mcp.atlassian.com/v1/mcp",
+      "env": {
+        "ATLASSIAN_EMAIL": "<span style="color:#F2617A;">seu@email.com</span>",
+        "ATLASSIAN_API_TOKEN": "<span style="color:#F2617A;">SEU_TOKEN</span>"
+      }
+    }
+  }
+}</pre>
+    </div>
+  </div>
+
+  <!-- Note -->
+  <div data-object="true" data-object-type="textbox" style="position:absolute; left:80px; top:820px; width:1500px; z-index:10;">
+    <div style="font-family:'Inter',sans-serif; font-size:24px; color:#003D4F; line-height:1.5;">
+      <span style="color:#F2617A; font-weight:700;">API Token:</span> id.atlassian.com/manage-profile/security/api-tokens → Create API token → nome: "Kiro"
+    </div>
+  </div>
+
+  <!-- footer -->
+  <div data-object="true" data-object-type="textbox" class="tw-footer on-light" style="z-index:10;">© 2026 Thoughtworks &nbsp;|&nbsp; Confidential</div>
+  <div data-object="true" data-object-type="textbox" class="tw-page-num on-light" style="z-index:10;">06</div>
+</div>
+
+<script src="nav.js"></script>
+</body></html>

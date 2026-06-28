@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light" style=""><head>
+<meta charset="utf-8">
+<title>MCP: GitHub — Oficina Kiro + MCP</title>
+<link rel="stylesheet" href="../assets/chrome.css">
+<link rel="stylesheet" href="nav.css">
+</head>
+<body style="user-select: none;">
+<div class="slide-container" data-screen-label="05 MCP GitHub" style="position:relative; width:1920px; height:1080px; overflow:hidden; background:#003D4F;">
+
+  <!-- thoughtworks logo (top-left) -->
+  <div data-object="true" data-object-type="image" style="position:absolute; left:80px; top:60px; width:280px; height:42px; display:flex; align-items:center; z-index:10;">
+    <div style="width:12px; height:42px; background:#F2617A; transform: skewX(-18deg); margin-right:12px;"></div>
+    <span style="font-family:'Inter',sans-serif; font-weight:700; font-size:32px; color:#FFFFFF; letter-spacing:-0.02em;">thoughtworks</span>
+  </div>
+
+  <!-- divider rule -->
+  <div data-object="true" data-object-type="shape" style="position:absolute; left:80px; top:130px; width:1760px; height:2px; background:#FFFFFF; opacity:0.12; z-index:1;"></div>
+
+  <!-- Section label -->
+  <div data-object="true" data-object-type="textbox" style="position:absolute; left:80px; top:160px; z-index:10;">
+    <div style="font-family:'Inter',sans-serif; font-weight:700; font-size:18px; color:#F2617A; letter-spacing:0.18em; text-transform:uppercase;">Bloco 2 · MCP</div>
+  </div>
+
+  <!-- Title -->
+  <div data-object="true" data-object-type="textbox" style="position:absolute; left:80px; top:210px; width:1200px; z-index:10;">
+    <div style="font-family:'Inter',sans-serif; font-weight:800; font-size:56px; color:#FFFFFF; line-height:1.1; letter-spacing:-0.025em;">Configurar MCP: <span style="color:#F2617A;">GitHub</span></div>
+  </div>
+
+  <!-- Code block -->
+  <div data-object="true" data-object-type="textbox" style="position:absolute; left:80px; top:340px; width:1600px; z-index:10;">
+    <div style="background:rgba(0,0,0,0.35); border:1px solid rgba(255,255,255,0.1); border-radius:12px; padding:40px 48px;">
+      <div style="font-family:'Inter',sans-serif; font-weight:600; font-size:16px; color:rgba(255,255,255,0.5); margin-bottom:16px; letter-spacing:0.05em;">.kiro/settings/mcp.json</div>
+      <pre style="font-family:'JetBrains Mono','Fira Code',monospace; font-size:22px; color:rgba(255,255,255,0.92); line-height:1.7; margin:0; white-space:pre-wrap;">{
+  <span style="color:#F2617A;">"mcpServers"</span>: {
+    <span style="color:#F2617A;">"github"</span>: {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "<span style="color:#F2617A;">ghp_SEU_TOKEN</span>"
+      }
+    }
+  }
+}</pre>
+    </div>
+  </div>
+
+  <!-- Note -->
+  <div data-object="true" data-object-type="textbox" style="position:absolute; left:80px; top:820px; width:1400px; z-index:10;">
+    <div style="font-family:'Inter',sans-serif; font-size:24px; color:rgba(255,255,255,0.7); line-height:1.5;">
+      <span style="color:#F2617A; font-weight:700;">Token:</span> github.com/settings/tokens → Generate new token (classic) → marcar <strong style="color:#FFFFFF;">repo</strong> + <strong style="color:#FFFFFF;">read:user</strong>
+    </div>
+  </div>
+
+  <!-- footer -->
+  <div data-object="true" data-object-type="textbox" class="tw-footer on-dark" style="z-index:10;">© 2026 Thoughtworks &nbsp;|&nbsp; Confidential</div>
+  <div data-object="true" data-object-type="textbox" class="tw-page-num on-dark" style="z-index:10;">05</div>
+</div>
+
+<script src="nav.js"></script>
+</body></html>

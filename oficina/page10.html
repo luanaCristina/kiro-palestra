@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light" style=""><head>
+<meta charset="utf-8">
+<title>Steering Files — Oficina Kiro + MCP</title>
+<link rel="stylesheet" href="../assets/chrome.css">
+<link rel="stylesheet" href="nav.css">
+</head>
+<body style="user-select: none;">
+<div class="slide-container" data-screen-label="10 Steering Files" style="position:relative; width:1920px; height:1080px; overflow:hidden; background:#ECF0F3;">
+
+  <!-- thoughtworks logo (top-left) -->
+  <div data-object="true" data-object-type="image" style="position:absolute; left:80px; top:60px; width:280px; height:42px; display:flex; align-items:center; z-index:10;">
+    <div style="width:12px; height:42px; background:#F2617A; transform: skewX(-18deg); margin-right:12px;"></div>
+    <span style="font-family:'Inter',sans-serif; font-weight:700; font-size:32px; color:#003D4F; letter-spacing:-0.02em;">thoughtworks</span>
+  </div>
+
+  <!-- divider rule -->
+  <div data-object="true" data-object-type="shape" style="position:absolute; left:80px; top:130px; width:1760px; height:2px; background:#003D4F; opacity:0.12; z-index:1;"></div>
+
+  <!-- Section label -->
+  <div data-object="true" data-object-type="textbox" style="position:absolute; left:80px; top:160px; z-index:10;">
+    <div style="font-family:'Inter',sans-serif; font-weight:700; font-size:18px; color:#F2617A; letter-spacing:0.18em; text-transform:uppercase;">Bloco 4 · Steering</div>
+  </div>
+
+  <!-- Title -->
+  <div data-object="true" data-object-type="textbox" style="position:absolute; left:80px; top:210px; width:1400px; z-index:10;">
+    <div style="font-family:'Inter',sans-serif; font-weight:800; font-size:56px; color:#003D4F; line-height:1.1; letter-spacing:-0.025em;">Steering Files: <span style="color:#F2617A;">Previne Alucinação</span></div>
+  </div>
+
+  <!-- Three file cards -->
+  <div data-object="true" data-object-type="textbox" style="position:absolute; left:80px; top:340px; width:1760px; z-index:10;">
+    <div style="display:flex; gap:28px;">
+      <!-- product.md -->
+      <div style="flex:1; background:#003D4F; border-radius:10px; padding:28px 32px;">
+        <div style="font-family:'JetBrains Mono',monospace; font-size:16px; color:#F2617A; margin-bottom:14px; font-weight:600;">.kiro/steering/product.md</div>
+        <div style="font-family:'JetBrains Mono',monospace; font-size:17px; color:rgba(255,255,255,0.85); line-height:1.7;">
+          # Product<br>
+          - To-do list API<br>
+          - Público: devs<br>
+          - MVP: CRUD tarefas<br>
+          - Prioridade: simplicidade
+        </div>
+      </div>
+      <!-- tech.md -->
+      <div style="flex:1; background:#003D4F; border-radius:10px; padding:28px 32px;">
+        <div style="font-family:'JetBrains Mono',monospace; font-size:16px; color:#F2617A; margin-bottom:14px; font-weight:600;">.kiro/steering/tech.md</div>
+        <div style="font-family:'JetBrains Mono',monospace; font-size:17px; color:rgba(255,255,255,0.85); line-height:1.7;">
+          # Tech Stack<br>
+          - Runtime: Node.js 20<br>
+          - Language: TypeScript<br>
+          - Framework: Express<br>
+          - Testing: Jest
+        </div>
+      </div>
+      <!-- structure.md -->
+      <div style="flex:1; background:#003D4F; border-radius:10px; padding:28px 32px;">
+        <div style="font-family:'JetBrains Mono',monospace; font-size:16px; color:#F2617A; margin-bottom:14px; font-weight:600;">.kiro/steering/structure.md</div>
+        <div style="font-family:'JetBrains Mono',monospace; font-size:17px; color:rgba(255,255,255,0.85); line-height:1.7;">
+          # Structure<br>
+          src/<br>
+          ├── routes/<br>
+          ├── services/<br>
+          └── models/<br>
+          tests/
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Before/After -->
+  <div data-object="true" data-object-type="textbox" style="position:absolute; left:80px; top:740px; width:1600px; z-index:10;">
+    <div style="display:flex; gap:40px;">
+      <div style="flex:1; background:rgba(242,97,122,0.06); border:1px solid rgba(242,97,122,0.3); border-radius:8px; padding:20px 28px;">
+        <div style="font-family:'Inter',sans-serif; font-weight:700; font-size:18px; color:#F2617A; margin-bottom:8px;">❌ SEM Steering</div>
+        <div style="font-family:'Inter',sans-serif; font-size:20px; color:#003D4F;">"Adiciona endpoint" → Pode criar em JS, Fastify, sem testes...</div>
+      </div>
+      <div style="flex:1; background:rgba(0,61,79,0.06); border:1px solid rgba(0,61,79,0.3); border-radius:8px; padding:20px 28px;">
+        <div style="font-family:'Inter',sans-serif; font-weight:700; font-size:18px; color:#003D4F; margin-bottom:8px;">✅ COM Steering</div>
+        <div style="font-family:'Inter',sans-serif; font-size:20px; color:#003D4F;">"Adiciona endpoint" → Sempre TypeScript, Express, com Jest test</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- footer -->
+  <div data-object="true" data-object-type="textbox" class="tw-footer on-light" style="z-index:10;">© 2026 Thoughtworks &nbsp;|&nbsp; Confidential</div>
+  <div data-object="true" data-object-type="textbox" class="tw-page-num on-light" style="z-index:10;">10</div>
+</div>
+
+<script src="nav.js"></script>
+</body></html>
