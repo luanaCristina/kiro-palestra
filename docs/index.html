@@ -1,84 +1,42 @@
 <!DOCTYPE html>
-<html lang="pt-BR" data-theme="light" style=""><head>
+<html lang="pt-BR">
+<head>
 <meta charset="utf-8">
-<title>Cover — Kiro + MCP</title>
-<link rel="stylesheet" href="../assets/chrome.css">
+<title>Apresentações — Kiro + MCP</title>
 <style>
-  .slide-container { background: #003D4F; }
-  .hero-title {
-    font-family: 'Inter', sans-serif;
-    font-weight: 800;
-    font-size: 92px;
-    line-height: 1.05;
-    color: #FFFFFF;
-    letter-spacing: -0.025em;
-  }
-  .hero-title .accent { color: #F2617A; }
-  .event-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 14px;
-    padding: 14px 28px;
-    border: 1.5px solid rgba(242,97,122,0.6);
-    border-radius: 4px;
-    background: rgba(242,97,122,0.08);
-  }
-  .event-pill .dot { width: 10px; height: 10px; border-radius: 50%; background: #F2617A; }
-  .event-pill .label { font-family: 'Inter', sans-serif; font-weight: 600; font-size: 22px; color: #F2617A; letter-spacing: 0.02em; }
-  .speaker-line { font-family: 'Inter', sans-serif; font-weight: 500; font-size: 28px; color: rgba(255,255,255,0.85); letter-spacing: 0.01em; }
-  .speaker-line .name { color:#FFFFFF; font-weight:700; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Inter', system-ui, sans-serif; background: #003D4F; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px; }
+  h1 { color: #fff; font-size: 36px; margin-bottom: 8px; }
+  p { color: rgba(255,255,255,0.7); font-size: 18px; margin-bottom: 40px; }
+  .cards { display: flex; gap: 24px; flex-wrap: wrap; justify-content: center; }
+  .card { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; padding: 32px; width: 380px; text-decoration: none; transition: all 0.2s; }
+  .card:hover { background: rgba(255,255,255,0.12); transform: translateY(-2px); }
+  .card h2 { color: #F2617A; font-size: 20px; margin-bottom: 8px; }
+  .card p { color: rgba(255,255,255,0.8); font-size: 15px; margin-bottom: 16px; }
+  .card .meta { color: rgba(255,255,255,0.5); font-size: 13px; }
+  .footer { margin-top: 40px; color: rgba(255,255,255,0.4); font-size: 13px; }
+  .footer a { color: #F2617A; text-decoration: none; }
 </style>
-<link rel="stylesheet" href="nav.css">
 </head>
-<body style="user-select: none;">
-<div class="slide-container" data-screen-label="01 Cover" style="position:relative; width:1920px; height:1080px; overflow:hidden; background:#003D4F;">
-
-  <!-- Geometric decoration: large coral slash on right -->
-  <div data-object="true" data-object-type="shape" style="position:absolute; left:1480px; top:-80px; width:520px; height:1260px; background:#F2617A; transform: skewX(-18deg); z-index:1; opacity:0.96;" id="fabric-obj-0-1781117253244"></div>
-  <div data-object="true" data-object-type="shape" style="position:absolute; left:1390px; top:-80px; width:60px; height:1260px; background:rgba(255,255,255,0.08); transform: skewX(-18deg); z-index:1;"></div>
-
-  <!-- thoughtworks logo (top-left) -->
-  <div data-object="true" data-object-type="image" style="position:absolute; left:80px; top:80px; width:280px; height:46px; display:flex; align-items:center; z-index:10;" id="fabric-obj-1-1781117253245">
-    <div style="width:14px; height:46px; background:#F2617A; transform: skewX(-18deg); margin-right:14px;"></div>
-    <span style="font-family:'Inter',sans-serif; font-weight:700; font-size:36px; color:#FFFFFF; letter-spacing:-0.02em;">thoughtworks</span>
+<body>
+  <h1>Luana Cristina — Apresentações</h1>
+  <p>Quality Analyst Consultant @ Thoughtworks</p>
+  <div class="cards">
+    <a class="card" href="presenter.html">
+      <h2>🎤 Palestra TDC Recife</h2>
+      <p>E se o QA pudesse ler o Jira, o Confluence e o código ao mesmo tempo? Com Kiro, pode.</p>
+      <span class="meta">18 slides · 1º Esquenta TDC + Rec'n'Play</span>
+    </a>
+    <a class="card" href="oficina/presenter.html">
+      <h2>🧪 Oficina Kiro + MCP</h2>
+      <p>Desenvolvimento Assistido por IA: Do Zero ao Deploy com Jira, Confluence e GitHub.</p>
+      <span class="meta">15 slides · Hands-On 2–4h</span>
+    </a>
   </div>
-
-  <!-- Event tag -->
-  <div data-object="true" data-object-type="textbox" style="position:absolute; left:80px; top:230px; z-index:10;" id="fabric-obj-2-1781117253245">
-    <div class="event-pill">
-      <span class="dot"></span>
-      <span class="label">1º ESQUENTA TDC RECIFE + REC'N'PLAY</span>
-    </div>
+  <div class="footer">
+    <a href="https://github.com/luanaCristina/kiro-palestra">GitHub</a> · 
+    <a href="https://www.linkedin.com/in/luanacristinaas/">LinkedIn</a> · 
+    <a href="https://kiro.dev">Kiro</a>
   </div>
-
-  <!-- Hero title -->
-  <div data-object="true" data-object-type="textbox" style="position:absolute; left:80px; top:340px; width:1280px; z-index:10;" id="fabric-obj-3-1781117253245">
-    <div class="hero-title">
-      E se o <span class="accent">QA</span> pudesse ler<br>
-      o <span class="accent">Jira</span>, o <span class="accent">Confluence</span><br>
-      e o <span class="accent">código</span> ao mesmo tempo?
-    </div>
-  </div>
-
-  <!-- subtitle -->
-  <div data-object="true" data-object-type="textbox" style="position:absolute; left:80px; top:820px; width:1280px; z-index:10;" id="fabric-obj-4-1781117253245">
-    <div style="font-family:'Inter',sans-serif; font-weight:300; font-size:54px; color:#FFFFFF; line-height:1.1; letter-spacing:-0.01em;">
-      Com <span style="font-weight:800; color:#F2617A;">Kiro</span>, pode.
-    </div>
-  </div>
-
-  <!-- speaker -->
-  <div data-object="true" data-object-type="textbox" style="position:absolute; left:80px; top:940px; width:1280px; z-index:10;" id="fabric-obj-5-1781117253245">
-    <div class="speaker-line">
-      <span class="name">Luana Cristina</span> &nbsp;·&nbsp; Quality Analyst @ Thoughtworks
-    </div>
-  </div>
-
-  <!-- footer -->
-  <div data-object="true" data-object-type="textbox" class="tw-footer on-dark" style="z-index:10;" id="fabric-obj-6-1781117253245">© 2026 Thoughtworks &nbsp;|&nbsp; Confidential</div>
-  <div data-object="true" data-object-type="textbox" class="tw-page-num on-dark" style="z-index:10;" id="fabric-obj-7-1781117253245">01</div>
-</div>
-
-
-<script src="nav.js"></script>
-</body></html>
+</body>
+</html>
