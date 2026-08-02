@@ -8,14 +8,14 @@
   const TOTAL_SLIDES = 18;
 
   function getCurrentSlide() {
-    const filename = window.location.pathname.split('/').pop() || 'index.html';
-    if (filename === 'index.html' || filename === '' || filename === 'index') return 1;
+    const filename = window.location.pathname.split('/').pop() || 'page1.html';
+    if (filename === 'page1.html' || filename === '' || filename === 'page1') return 1;
     const match = filename.match(/page(\d+)/);
     return match ? parseInt(match[1], 10) : 1;
   }
 
   function getSlideUrl(num) {
-    return num === 1 ? 'index.html' : `page${num}.html`;
+    return `page${num}.html`;
   }
 
   const current = getCurrentSlide();
@@ -30,7 +30,7 @@
   nav.className = 'slide-nav';
   nav.innerHTML = `
     <div style="display:flex;align-items:center;gap:8px;">
-      ${current > 1 ? `<button class="nav-home" onclick="location.href='index.html'">🏠</button>` : ''}
+      ${current > 1 ? `<button class="nav-home" onclick="location.href='presenter.html'">🏠</button>` : `<button class="nav-home" onclick="location.href='index.html'">🏠</button>`}
       ${prev ? `<button class="nav-prev" onclick="location.href='${prev}'">←</button>` : ''}
     </div>
     <span class="nav-counter">${current} / ${TOTAL_SLIDES}</span>
@@ -62,7 +62,7 @@
     }
     if (e.key === 'Home') {
       e.preventDefault();
-      window.location.href = 'index.html';
+      window.location.href = 'page1.html';
     }
   });
 
